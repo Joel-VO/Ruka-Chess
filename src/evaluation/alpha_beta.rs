@@ -12,7 +12,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
     let beta = i32::MAX;
     let legal_moves = MoveGen::new_legal(&board);
     for moves in legal_moves{
-        let current_position = board.make_move_new(moves);//?
+        let current_position = board.make_move_new(moves);
         let eval = alpha_beta_search(&current_position, 1, alpha, beta, !is_maximising, max_depth);
         if is_maximising && (eval>best_eval){
             best_move = Some(moves);
@@ -40,7 +40,7 @@ fn alpha_beta_search(board:&Board, depth:u8, mut alpha:i32, mut beta:i32, is_max
             let mut max_eval = i32::MIN;
             let legal_moves = MoveGen::new_legal(board);
             for mv in legal_moves{
-                let current_position = board.make_move_new(mv);//?
+                let current_position = board.make_move_new(mv);
                 let eval = alpha_beta_search(&current_position, depth+1, alpha, beta, false, max_depth);
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);

@@ -19,3 +19,4 @@ pub fn evaluate(board:&Board)->i32{
     }
     evaluation
 }
+//add piece table concept for each piece
