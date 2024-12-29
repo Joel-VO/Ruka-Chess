@@ -29,6 +29,9 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{
     }
     score
 }
-pub fn moves_sorted(board:&Board){//this has to be a sorted array of possible moves... has to have a return function
-    let moves = MoveGen::new_legal(board);
+pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { //this has to be a sorted array of possible moves... has to have a return function
+    let move_gen = MoveGen::new_legal(board);
+    let mut moves: Vec<ChessMove> = move_gen.collect();
+    moves.sort_by_key(|mv| -score_move(board, mv)); //descending order
+    moves
 }
