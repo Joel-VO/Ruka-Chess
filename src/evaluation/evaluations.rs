@@ -62,6 +62,7 @@ pub fn evaluate(board:&Board)->i32{
 
     for ch in parse_fen.chars(){//the piece tables are skewing the results, so have to change them
         //write a python script to mirror the tables for black.
+        // println!("char is {ch} at {row} {col}");
         match ch{
             //must be inefficient or there must be an easier way to do this, not sure
             //row and col numbers are tracked to multiply existing piece eval with piece position table
@@ -78,13 +79,11 @@ pub fn evaluate(board:&Board)->i32{
             },
             'N' => {
                 let val = knight_piece_table[row][col];
-                println!("{val}");
                 evaluation += 320 + val;
                 col+=1;
             },
             'n' => {
                 let val = knight_piece_table[7-row][7-col];
-                println!("{val}");
                 evaluation -= 320 + val;
                 col+=1;
             },
@@ -110,20 +109,29 @@ pub fn evaluate(board:&Board)->i32{
             },
             'Q' => {
                 let val = queen_piece_table[row][col];
+                println!("{val}, {ch}, {row} {col}");
                 evaluation += 900 + val;
                 col+=1;
             },
             'q' => {
-                let val = queen_piece_table[7-row][7-col];
+                let val = queen_piece_table[7-row][7-col];//so... queens and kings being non symmetric
+                // introduced a flaw in the logic, removing 7-col fixes the code, but id have to do that for all
+                println!("{val}, {ch}, {row} {col}");
                 evaluation -= 900 + val;
                 col+=1;
             },
             '/' => {
                 //when encountering a '/' , go to the next row and make col = 0
                 col = 0;
-                row+=1;
+                row += 1;
             },
-            _  => {
+            'K' => {
+                col+=1;
+            },
+            'k' => {
+                col+=1;
+            },
+            _ => {
                 // when encountering digits, it adds the digits to col. This value can't go
                 // out of the bounds of 8*8, so no need for error checks yet... incase errors arise, rectify that
                 if ch.is_digit(10){
