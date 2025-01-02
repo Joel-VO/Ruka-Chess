@@ -60,6 +60,7 @@ pub fn evaluate(board:&Board)->i32{
         [-35,  -8,  11,   2,   8,  15,  -3,   1],
         [-1, -18,  -9,  10, -15, -25, -31, -50]];
     for ch in parse_fen.chars(){
+
         match ch{
             //must be inefficient or there must be an easier way to do this, not sure
             //row and col numbers are tracked to multiply existing piece eval with piece position table
@@ -133,3 +134,4 @@ pub fn evaluate(board:&Board)->i32{
     evaluation
 }
 // add piece tables for the kings as well
+//match function can be made under a single for loop efficiently

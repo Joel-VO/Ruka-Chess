@@ -1,29 +1,48 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
 use crate::evaluation::evaluations::evaluate;
 use crate::evaluation::move_ordering::moves_sorted;
-pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
-    let mut best_move = None;
-    let mut best_eval = if is_maximising {
-        i32::MIN
-    } else {
-        i32::MAX
-    };
+use rayon::prelude::*;
+pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{//apply rayon crate here
     let alpha = i32::MIN;
     let beta = i32::MAX;
-    let legal_moves = MoveGen::new_legal(&board);
-    for moves in legal_moves{
-        let current_position = board.make_move_new(moves);
-        let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, max_depth);
-        if is_maximising && (eval>best_eval){
-            best_move = Some(moves);
-            best_eval = eval;
-        }else if !is_maximising && (eval<best_eval){
-            best_move = Some(moves);
-            best_eval = eval;
-        }
-    }
+
+    let legal_moves:Vec<ChessMove> = MoveGen::new_legal(&board).collect();
+    let (best_move, _best_eval) = legal_moves
+        .par_iter()
+        .map(
+            |&moves|{
+                let current_position = board.make_move_new(moves);
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, max_depth);
+                (Some(moves),eval)
+            }
+        )
+        .reduce(//this is the condition that's checked to combine different threads
+            || {//initial case
+                if is_maximising{
+                    (None, i32::MIN)
+                }else{
+                    (None, i32::MAX)
+                }
+            },
+            |a,b|{
+                if is_maximising{//the condition to see what's the best move
+                    if a.1>b.1{
+                        a
+                    }else{
+                        b
+                    }
+                }else{
+                    if a.1>b.1{
+                        b
+                    }else{
+                        a
+                    }
+                }
+            }
+        );
     best_move
 }
+
 fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8) ->i32{
     //add in Principal variance search to speed up searching
     //to be done after move ordering or else engine will perform worse.
@@ -69,3 +88,4 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
+//start first by adding in parallel computing using rayon... maybe the best option.
