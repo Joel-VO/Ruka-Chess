@@ -59,8 +59,9 @@ pub fn evaluate(board:&Board)->i32{
         [-14,   2, -11,  -2,  -5,   2,  14,   5],
         [-35,  -8,  11,   2,   8,  15,  -3,   1],
         [-1, -18,  -9,  10, -15, -25, -31, -50]];
-    for ch in parse_fen.chars(){
 
+    for ch in parse_fen.chars(){//the piece tables are skewing the results, so have to change them
+        //write a python script to mirror the tables for black.
         match ch{
             //must be inefficient or there must be an easier way to do this, not sure
             //row and col numbers are tracked to multiply existing piece eval with piece position table
@@ -71,18 +72,20 @@ pub fn evaluate(board:&Board)->i32{
                 col+=1;
             },
             'p' => {
-                let val = pawn_piece_table[7-row][7-col];//row and col have to be reversed as sides switch and are mirrored
-                evaluation +=  -(100 + val);//parenthesis placed to prevent wrong calculation
+                let val = pawn_piece_table[7-row][7-col]; //row and col have to be reversed as sides switch and are mirrored
+                evaluation -= 100 + val;//parenthesis placed to prevent wrong calculation
                 col+=1;
             },
             'N' => {
                 let val = knight_piece_table[row][col];
+                println!("{val}");
                 evaluation += 320 + val;
                 col+=1;
             },
             'n' => {
                 let val = knight_piece_table[7-row][7-col];
-                evaluation += -(320 + val);
+                println!("{val}");
+                evaluation -= 320 + val;
                 col+=1;
             },
             'B' => {
@@ -92,7 +95,7 @@ pub fn evaluate(board:&Board)->i32{
             },
             'b' => {
                 let val = bishop_piece_table[7-row][7-col];
-                evaluation += -(330 + val);
+                evaluation -= 330 + val;
                 col+=1;
             },
             'R' => {
@@ -102,7 +105,7 @@ pub fn evaluate(board:&Board)->i32{
             },
             'r' => {
                 let val = rook_piece_table[7-row][7-col];
-                evaluation += -(500 + val);
+                evaluation -= 500 + val;
                 col+=1;
             },
             'Q' => {
@@ -112,7 +115,7 @@ pub fn evaluate(board:&Board)->i32{
             },
             'q' => {
                 let val = queen_piece_table[7-row][7-col];
-                evaluation += -(900 + val);
+                evaluation -= 900 + val;
                 col+=1;
             },
             '/' => {
