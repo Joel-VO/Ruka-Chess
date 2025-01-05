@@ -1,4 +1,3 @@
-//add in transposition tables, move ordering, quiescent search
 use chess::{Board, ChessMove, MoveGen, Piece};
 fn piece_value(piece:Piece) -> i16{
     match piece{//values have to be fine-tuned
@@ -10,7 +9,8 @@ fn piece_value(piece:Piece) -> i16{
         Piece::King => 10000
     }
 }
-fn score_move(board: &Board, mv: &ChessMove) -> i16{
+fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and captures
+    //score stores the score of a move
     let mut score:i16 = 0;
     if let Some(captured_piece) = board.piece_on(mv.get_dest()){//MVV-LVA sorting
         let attacker = board.piece_on(mv.get_source()).unwrap();
@@ -29,10 +29,10 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{
     }
     score
 }
-pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { //this has to be a sorted array of possible moves... has to have a return function
+pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { // sorted array of possible moves
     let move_gen = MoveGen::new_legal(board);
     let mut moves: Vec<ChessMove> = move_gen.collect();
-    //ideally convert this to an array to improve speed...issue is size has to be fixed, but that's ]
+    //ideally convert this to an array to improve speed...issue is size has to be fixed, but that's
     // not an issue, the sorting has to be done using merge sort or similar algorithm to speed up sorting
     moves.sort_by_key(|mv| -score_move(board, mv)); //descending order
     moves

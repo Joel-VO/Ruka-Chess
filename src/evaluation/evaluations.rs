@@ -11,9 +11,6 @@ pub fn evaluate(board:&Board)->i32{
     let fen_parts:Vec<&str> = fen.split_whitespace().collect();
     let parse_fen = fen_parts[0];
     //ideally change this somehow,this could just be really slow...
-    //takes just the string as w for denoting white to
-    // move and b denoting black to move was skewing the eval
-
     let mut evaluation:i32 = 0;
     //actual piece tables
     let white_pawn_piece_table:[[i32;8];8] = [
@@ -125,7 +122,6 @@ pub fn evaluate(board:&Board)->i32{
             //row and col numbers are tracked to multiply existing piece eval with piece position table
 
             'P' => {
-                // let val = white_pawn_piece_table[row][col];
                 evaluation += 100 + white_pawn_piece_table[row][col];
                 col+=1;
             },
@@ -162,8 +158,6 @@ pub fn evaluate(board:&Board)->i32{
                 col+=1;
             },
             'q' => {
-                //so... queens and kings being non-symmetric
-                // introduced a flaw in the logic, removing 7-col fixes the code, but id have to do that for all
                 evaluation -= 900 + black_queen_piece_table[row][col];
                 col+=1;
             },
@@ -179,8 +173,7 @@ pub fn evaluate(board:&Board)->i32{
                 col+=1;
             },
             _ => {
-                // when encountering digits, it adds the digits to col. This value can't go
-                // out of the bounds of 8*8, so no need for error checks yet... in-case errors arise, rectify that
+                //when encountering a number, the col has to be added by that amount according to fen notation.
                 if ch.is_digit(10){
                     let val = ch.to_digit(10).unwrap() as usize;
                     col += val;
@@ -192,4 +185,3 @@ pub fn evaluate(board:&Board)->i32{
     evaluation
 }
 // add piece tables for the kings as well
-//match function can be made under a single for loop efficiently
