@@ -5,7 +5,7 @@ use chess::Board;
 use crate::evaluation::alpha_beta::best_move;
 
 fn main() {
-    let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";//feed the fen to this...
+    let fen = "2r5/kp5p/6p1/5p2/1P3b2/P2P4/6r1/1K1N1R2 b - - 0 38";//feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player

@@ -62,11 +62,23 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         if is_maximising{
             let mut max_eval = i32::MIN;
             let legal_moves = moves_sorted(board);
+            let mut first_move:bool = true;
             for mv in legal_moves{
 
-                let current_position = board.make_move_new(mv);//make efficient if possible...referencing a new piece each time is costly
-                //make changed here to implement PVS
-                let eval = alpha_beta_search(&current_position, alpha, beta, false, depth-1);
+                let eval = if first_move{
+                    first_move=false;
+                    let current_position:Board = board.make_move_new(mv);
+                    alpha_beta_search(&current_position, alpha, beta, false, depth-1)
+                }else{
+                    let current_position:Board = board.make_move_new(mv);
+                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth-1);
+                    if pvs_eval>alpha{
+                        alpha_beta_search(&current_position, alpha, beta, false, depth-1)
+                    }else{
+                        pvs_eval
+                    }
+                };
+
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
 
@@ -75,14 +87,28 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 }
             }
             max_eval
+
+
         }else{
             let mut min_eval= i32::MAX;
             let legal_moves = MoveGen::new_legal(board);
+            let mut first_move = true;
             for mv in legal_moves{
 
-                let current_position = board.make_move_new(mv);//any way to make this more efficient
-                //make changed here to implement PVS
-                let eval = alpha_beta_search(&current_position, alpha, beta, true, depth-1);
+                let eval = if first_move{
+                    first_move=false;
+                    let current_position:Board = board.make_move_new(mv);
+                    alpha_beta_search(&current_position, alpha, beta, true, depth-1)
+                }else{
+                    let current_position:Board = board.make_move_new(mv);
+                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth-1);
+                    if pvs_eval<beta{
+                        alpha_beta_search(&current_position, alpha, beta, true, depth-1)
+                    }else{
+                        pvs_eval
+                    }
+                };
+
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
 
@@ -94,3 +120,5 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
+//add in quiescent search
+//sometimes, engine doesn't do the mate. some bug in the code
