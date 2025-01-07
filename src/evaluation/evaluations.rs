@@ -195,8 +195,48 @@ fn pe_sto(board: &Board) -> i32{
 
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
     let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
-
+    let game_phase_inc:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];
+    let board_fen = board.to_string();
+    let split_fen:Vec<&str> = board_fen.split_whitespace().collect();
+    let fen = split_fen[0];
     //implement piece square_tables.
+    let side2move:u8 = {
+        if split_fen[1] == "w"{
+            0
+        }else{
+            1
+        }
+    };
+    let other_side2move:u8 = 1-side2move;
 
+    let mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
+    let eg:[i32;2] = [0,0];//endgame table
 
+    for char in fen.chars(){
+        match char{
+            'P' => {
+
+            }
+            'p'
+        }
+    }
+    5//
 }
+//    /* evaluate each piece */
+//     for (int sq = 0; sq < 64; ++sq) {
+//         int pc = board[sq];
+//         if (pc != EMPTY) {
+//             mg[PCOLOR(pc)] += mg_table[pc][sq];
+//             eg[PCOLOR(pc)] += eg_table[pc][sq];
+//             gamePhase += gamephaseInc[pc];
+//         }
+//     }
+//
+//     /* tapered eval */
+//     int mgScore = mg[side2move] - mg[OTHER(side2move)];
+//     int egScore = eg[side2move] - eg[OTHER(side2move)];
+//     int mgPhase = gamePhase;
+//     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
+//     int egPhase = 24 - mgPhase;
+//     return (mgScore * mgPhase + egScore * egPhase) / 24;
+// }

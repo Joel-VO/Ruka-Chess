@@ -57,7 +57,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     }else if board.status() == BoardStatus::Stalemate {
         return 0
     }else if depth == 0{
-        return evaluate(board);
+        return evaluate(board);//replace with quiescent search
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
