@@ -122,3 +122,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 }
 //add in quiescent search
 //sometimes, engine doesn't do the mate. some bug in the code
+
+// fn quiescent_search(){
+//
+// }

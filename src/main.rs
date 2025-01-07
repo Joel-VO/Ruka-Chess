@@ -5,7 +5,7 @@ use chess::Board;
 use crate::evaluation::alpha_beta::best_move;
 
 fn main() {
-    let fen = "2r5/kp5p/6p1/5p2/1P3b2/P2P4/6r1/1K1N1R2 b - - 0 38";//feed the fen to this...
+    let fen = "8/8/8/8/2K5/8/3Q4/k7 w - - 21 23";//feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
@@ -17,7 +17,7 @@ fn main() {
             }else{
                 true
             };
-            if let Some(mov) = best_move(&board, is_maximising, 7) {
+            if let Some(mov) = best_move(&board, is_maximising, 4) {
                 println!("best move is {mov}");
             } else {
                 println!("No moves available");
@@ -28,3 +28,4 @@ fn main() {
         }
     }
 }
+//found the bug is most likely due to the king not having an evaluation, so no means to identify king position.

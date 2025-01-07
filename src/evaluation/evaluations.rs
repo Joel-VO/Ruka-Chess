@@ -167,9 +167,11 @@ pub fn evaluate(board:&Board)->i32{
                 row += 1;
             },
             'K' => {
+                evaluation+=1000;
                 col+=1;
             },
             'k' => {
+                evaluation-=1000;
                 col+=1;
             },
             _ => {
@@ -185,3 +187,16 @@ pub fn evaluate(board:&Board)->i32{
     evaluation
 }
 // add piece tables for the kings as well
+
+//implement peSTO evaluation
+//seems better
+//this is likely slower, and less accurate.
+fn pe_sto(board: &Board) -> i32{
+
+    let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
+    let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
+
+    //implement piece square_tables.
+
+
+}
