@@ -186,11 +186,7 @@ pub fn evaluate(board:&Board)->i32{
     }
     evaluation
 }
-// add piece tables for the kings as well
 
-//implement peSTO evaluation
-//seems better
-//this is likely slower, and less accurate.
 fn pe_sto(board: &Board) -> i32{
 
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
@@ -200,14 +196,14 @@ fn pe_sto(board: &Board) -> i32{
     let split_fen:Vec<&str> = board_fen.split_whitespace().collect();
     let fen = split_fen[0];
     //implement piece square_tables.
-    let side2move:u8 = {
+    let side2move:usize = {
         if split_fen[1] == "w"{
             0
         }else{
             1
         }
     };
-    let other_side2move:u8 = 1-side2move;
+    let other_side2move:usize = 1-side2move;
 
     let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
     let mut eg:[i32;2] = [0,0];//endgame table
@@ -219,79 +215,82 @@ fn pe_sto(board: &Board) -> i32{
     for char in fen.chars(){
         match char{
             'P' => {
-                // mg[0] += mg_piece_square_table_pawn[col];
-                // eg[0] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[0];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'p'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[0];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'N' => {
-                // mg[0] += mg_piece_square_table_pawn[col];
-                // eg[0] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[1];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'n'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[1];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'B' => {
-                // mg[1] += mg_piece_square_table_pawn[col];
-                // eg[1] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[2];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'b'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[2];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'R' => {
-                // mg[1] += mg_piece_square_table_pawn[col];
-                // eg[1] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[3];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'r'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[3];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'Q' => {
-                // mg[1] += mg_piece_square_table_pawn[col];
-                // eg[1] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[4];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'q'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[4];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'K' => {
-                // mg[1] += mg_piece_square_table_pawn[col];
-                // eg[1] += eg_piece_square_table_pawn[col];
+                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[5];
+                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'k'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[5];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             _ =>{
-                //add condition for alpha-numeric values
+                if char.is_digit(10){
+                    let step_col = char.to_digit(10).unwrap() as i8;
+                    col+=step_col;
+                }
             }
         }
     }
@@ -310,6 +309,7 @@ fn pe_sto(board: &Board) -> i32{
     eval
 }
 
+//peSTO eval taken from chessprogramming wiki
 
 //    /* evaluate each piece */
 //     for (int sq = 0; sq < 64; ++sq) {

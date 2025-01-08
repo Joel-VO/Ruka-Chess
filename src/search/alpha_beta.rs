@@ -1,6 +1,6 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
 use crate::evaluation::evaluations::evaluate;
-use crate::evaluation::move_ordering::moves_sorted;
+use crate::search::move_ordering::moves_sorted;
 use rayon::prelude::*;//implements parallelization
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
     let alpha = i32::MIN;

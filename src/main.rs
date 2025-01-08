@@ -1,8 +1,9 @@
 mod evaluation;
+mod search;
 
 use std::str::FromStr;
 use chess::Board;
-use crate::evaluation::alpha_beta::best_move;
+use crate::search::alpha_beta::best_move;
 
 fn main() {
     let fen = "8/8/8/8/2K5/8/3Q4/k7 w - - 21 23";//feed the fen to this...
