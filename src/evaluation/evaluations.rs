@@ -209,19 +209,108 @@ fn pe_sto(board: &Board) -> i32{
     };
     let other_side2move:u8 = 1-side2move;
 
-    let mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
-    let eg:[i32;2] = [0,0];//endgame table
+    let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
+    let mut eg:[i32;2] = [0,0];//endgame table
+
+    let mut col:i8 = 0;
+
+    let mut game_phase = 0;
 
     for char in fen.chars(){
         match char{
             'P' => {
-
+                // mg[0] += mg_piece_square_table_pawn[col];
+                // eg[0] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
             }
-            'p'
+            'p'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'N' => {
+                // mg[0] += mg_piece_square_table_pawn[col];
+                // eg[0] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'n'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'B' => {
+                // mg[1] += mg_piece_square_table_pawn[col];
+                // eg[1] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'b'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'R' => {
+                // mg[1] += mg_piece_square_table_pawn[col];
+                // eg[1] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'r'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'Q' => {
+                // mg[1] += mg_piece_square_table_pawn[col];
+                // eg[1] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'q'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'K' => {
+                // mg[1] += mg_piece_square_table_pawn[col];
+                // eg[1] += eg_piece_square_table_pawn[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            'k'=> {
+                // mg[1] += mg_piece_square_table_pawn_flipped[col];
+                // eg[1] += eg_piece_square_table_pawn_flipped[col];
+                col+=1;
+                game_phase += game_phase_inc[0];
+            }
+            _ =>{
+                //add condition for alpha-numeric values
+            }
         }
     }
-    5//
+    //tapered evaluation
+    let mg_score = mg[side2move] - mg[other_side2move];
+    let eg_score = eg[side2move] - eg[other_side2move];
+    let mg_phase = {
+        if game_phase > 24{
+            24
+        }else{
+            game_phase
+        }
+    };
+    let eg_phase = 24-mg_phase;
+    let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
+    eval
 }
+
+
 //    /* evaluate each piece */
 //     for (int sq = 0; sq < 64; ++sq) {
 //         int pc = board[sq];
