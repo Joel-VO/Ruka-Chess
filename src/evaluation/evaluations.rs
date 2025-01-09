@@ -186,7 +186,8 @@ pub fn evaluate(board:&Board)->i32{
     }
     evaluation
 }
-
+use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
+use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
 fn pe_sto(board: &Board) -> i32{
 
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
@@ -208,88 +209,88 @@ fn pe_sto(board: &Board) -> i32{
     let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
     let mut eg:[i32;2] = [0,0];//endgame table
 
-    let mut col:i8 = 0;
+    let mut col:usize = 0;
 
     let mut game_phase = 0;
 
     for char in fen.chars(){
         match char{
             'P' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[0];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[0];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][0] + mg_value[0];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][0] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'p'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[0];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[0];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][1] + mg_value[0];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][1] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'N' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[1];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[1];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][2] + mg_value[1];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][2] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'n'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[1];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[1];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][3] + mg_value[1];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][3] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'B' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[2];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[2];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][4] + mg_value[2];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][4] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'b'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[2];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[2];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][5] + mg_value[2];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][5] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'R' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[3];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[3];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][6] + mg_value[3];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][6] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'r'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[3];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[3];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][7] + mg_value[3];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][7] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'Q' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[4];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[4];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][8] + mg_value[4];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][8] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'q'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[4];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[4];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][9] + mg_value[4];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][9] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'K' => {
-                // mg[0] += mg_piece_square_table_pawn[col] + mg_value[5];
-                // eg[0] += eg_piece_square_table_pawn[col] + eg_value[5];
+                mg[0] += MG_PIECE_SQUARE_TABLES[col][10] + mg_value[5];
+                eg[0] += EG_PIECE_SQUARE_TABLES[col][10] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'k'=> {
-                // mg[1] += mg_piece_square_table_pawn_flipped[col] + mg_value[5];
-                // eg[1] += eg_piece_square_table_pawn_flipped[col] + eg_value[5];
+                mg[1] += MG_PIECE_SQUARE_TABLES[col][11] + mg_value[5];
+                eg[1] += EG_PIECE_SQUARE_TABLES[col][11] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             _ =>{
                 if char.is_digit(10){
-                    let step_col = char.to_digit(10).unwrap() as i8;
-                    col+=step_col;
+                    let step_col = char.to_digit(10).unwrap() as usize;
+                    col += step_col;
                 }
             }
         }
