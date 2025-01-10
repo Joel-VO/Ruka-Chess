@@ -3,7 +3,8 @@ mod search;
 
 use std::str::FromStr;
 use chess::Board;
-use crate::search::alpha_beta::best_move;
+// use crate::search::alpha_beta::best_move;
+use crate::evaluation::evaluations::pe_sto;
 
 fn main() {
     let fen = "8/8/8/8/2K5/8/3Q4/k7 w - - 21 23";//feed the fen to this...
@@ -13,16 +14,18 @@ fn main() {
 
         match Board::from_str(fen) {
         Ok(board) => {//checks condition to see current player if board is legal
-            let is_maximising = if piece_to_move == "b"{
-                false
-            }else{
-                true
-            };
-            if let Some(mov) = best_move(&board, is_maximising, 4) {
-                println!("best move is {mov}");
-            } else {
-                println!("No moves available");
-            }
+            // let is_maximising = if piece_to_move == "b"{
+            //     false
+            // }else{
+            //     true
+            // };
+            // if let Some(mov) = best_move(&board, is_maximising, 4) {
+            //     println!("best move is {mov}");
+            // } else {
+            //     println!("No moves available");
+            // }
+            let eval = pe_sto(&board);
+            println!("{eval}");
         }
         Err(err) => {
             println!("error in fen : {err}");//can be changed later to make sure errors are handled

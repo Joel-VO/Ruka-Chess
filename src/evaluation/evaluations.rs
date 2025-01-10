@@ -188,8 +188,7 @@ pub fn evaluate(board:&Board)->i32{
 }
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
-fn pe_sto(board: &Board) -> i32{
-
+pub fn pe_sto(board: &Board) -> i32{
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
     let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
     let game_phase_inc:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];
@@ -225,67 +224,67 @@ fn pe_sto(board: &Board) -> i32{
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][1] + mg_value[0];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][1] + eg_value[0];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[1];
             }
             'N' => {
                 mg[0] += MG_PIECE_SQUARE_TABLES[col][2] + mg_value[1];
                 eg[0] += EG_PIECE_SQUARE_TABLES[col][2] + eg_value[1];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[2];
             }
             'n'=> {
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][3] + mg_value[1];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][3] + eg_value[1];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[3];
             }
             'B' => {
                 mg[0] += MG_PIECE_SQUARE_TABLES[col][4] + mg_value[2];
                 eg[0] += EG_PIECE_SQUARE_TABLES[col][4] + eg_value[2];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[4];
             }
             'b'=> {
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][5] + mg_value[2];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][5] + eg_value[2];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[5];
             }
             'R' => {
                 mg[0] += MG_PIECE_SQUARE_TABLES[col][6] + mg_value[3];
                 eg[0] += EG_PIECE_SQUARE_TABLES[col][6] + eg_value[3];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[6];
             }
             'r'=> {
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][7] + mg_value[3];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][7] + eg_value[3];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[7];
             }
             'Q' => {
                 mg[0] += MG_PIECE_SQUARE_TABLES[col][8] + mg_value[4];
                 eg[0] += EG_PIECE_SQUARE_TABLES[col][8] + eg_value[4];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[8];
             }
             'q'=> {
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][9] + mg_value[4];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][9] + eg_value[4];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[9];
             }
             'K' => {
                 mg[0] += MG_PIECE_SQUARE_TABLES[col][10] + mg_value[5];
                 eg[0] += EG_PIECE_SQUARE_TABLES[col][10] + eg_value[5];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[10];
             }
             'k'=> {
                 mg[1] += MG_PIECE_SQUARE_TABLES[col][11] + mg_value[5];
                 eg[1] += EG_PIECE_SQUARE_TABLES[col][11] + eg_value[5];
                 col+=1;
-                game_phase += game_phase_inc[0];
+                game_phase += game_phase_inc[11];
             }
             _ =>{
                 if char.is_digit(10){
