@@ -7,7 +7,7 @@ use chess::Board;
 use crate::evaluation::evaluations::pe_sto;
 
 fn main() {
-    let fen = "8/8/8/8/2K5/8/3Q4/k7 w - - 21 23";//feed the fen to this...
+    let fen = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2";//feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player

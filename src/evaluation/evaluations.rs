@@ -215,74 +215,74 @@ pub fn pe_sto(board: &Board) -> i32{
     for char in fen.chars(){
         match char{
             'P' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][0] + mg_value[0];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][0] + eg_value[0];
+                mg[0] += MG_PIECE_SQUARE_TABLES[0][col] + mg_value[0];
+                eg[0] += EG_PIECE_SQUARE_TABLES[0][col] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[0];
             }
             'p'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][1] + mg_value[0];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][1] + eg_value[0];
+                mg[1] += MG_PIECE_SQUARE_TABLES[1][col] + mg_value[0];
+                eg[1] += EG_PIECE_SQUARE_TABLES[1][col] + eg_value[0];
                 col+=1;
                 game_phase += game_phase_inc[1];
             }
             'N' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][2] + mg_value[1];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][2] + eg_value[1];
+                mg[0] += MG_PIECE_SQUARE_TABLES[2][col] + mg_value[1];
+                eg[0] += EG_PIECE_SQUARE_TABLES[2][col] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[2];
             }
             'n'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][3] + mg_value[1];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][3] + eg_value[1];
+                mg[1] += MG_PIECE_SQUARE_TABLES[3][col] + mg_value[1];
+                eg[1] += EG_PIECE_SQUARE_TABLES[3][col] + eg_value[1];
                 col+=1;
                 game_phase += game_phase_inc[3];
             }
             'B' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][4] + mg_value[2];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][4] + eg_value[2];
+                mg[0] += MG_PIECE_SQUARE_TABLES[4][col] + mg_value[2];
+                eg[0] += EG_PIECE_SQUARE_TABLES[4][col] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[4];
             }
             'b'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][5] + mg_value[2];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][5] + eg_value[2];
+                mg[1] += MG_PIECE_SQUARE_TABLES[5][col] + mg_value[2];
+                eg[1] += EG_PIECE_SQUARE_TABLES[5][col] + eg_value[2];
                 col+=1;
                 game_phase += game_phase_inc[5];
             }
             'R' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][6] + mg_value[3];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][6] + eg_value[3];
+                mg[0] += MG_PIECE_SQUARE_TABLES[6][col] + mg_value[3];
+                eg[0] += EG_PIECE_SQUARE_TABLES[6][col] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[6];
             }
             'r'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][7] + mg_value[3];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][7] + eg_value[3];
+                mg[1] += MG_PIECE_SQUARE_TABLES[7][col] + mg_value[3];
+                eg[1] += EG_PIECE_SQUARE_TABLES[7][col] + eg_value[3];
                 col+=1;
                 game_phase += game_phase_inc[7];
             }
             'Q' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][8] + mg_value[4];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][8] + eg_value[4];
+                mg[0] += MG_PIECE_SQUARE_TABLES[8][col] + mg_value[4];
+                eg[0] += EG_PIECE_SQUARE_TABLES[8][col] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[8];
             }
             'q'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][9] + mg_value[4];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][9] + eg_value[4];
+                mg[1] += MG_PIECE_SQUARE_TABLES[9][col] + mg_value[4];
+                eg[1] += EG_PIECE_SQUARE_TABLES[9][col] + eg_value[4];
                 col+=1;
                 game_phase += game_phase_inc[9];
             }
             'K' => {
-                mg[0] += MG_PIECE_SQUARE_TABLES[col][10] + mg_value[5];
-                eg[0] += EG_PIECE_SQUARE_TABLES[col][10] + eg_value[5];
+                mg[0] += MG_PIECE_SQUARE_TABLES[10][col] + mg_value[5];
+                eg[0] += EG_PIECE_SQUARE_TABLES[10][col] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[10];
             }
             'k'=> {
-                mg[1] += MG_PIECE_SQUARE_TABLES[col][11] + mg_value[5];
-                eg[1] += EG_PIECE_SQUARE_TABLES[col][11] + eg_value[5];
+                mg[1] += MG_PIECE_SQUARE_TABLES[11][col] + mg_value[5];
+                eg[1] += EG_PIECE_SQUARE_TABLES[11][col] + eg_value[5];
                 col+=1;
                 game_phase += game_phase_inc[11];
             }
@@ -294,6 +294,10 @@ pub fn pe_sto(board: &Board) -> i32{
             }
         }
     }
+    let side_move = mg[side2move];
+    let side_not_move = mg[other_side2move];
+    println!("mg value of side to move is {side_move}");
+    println!("mg value of side not to move is {side_not_move}");
     //tapered evaluation
     let mg_score = mg[side2move] - mg[other_side2move];
     let eg_score = eg[side2move] - eg[other_side2move];
