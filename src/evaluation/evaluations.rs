@@ -188,7 +188,7 @@ pub fn evaluate(board:&Board)->i32{
 }
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
-pub fn pe_sto(board: &Board) -> i32{
+pub fn pesto(board: &Board) -> i32{
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
     let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
     let game_phase_inc:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];
@@ -294,10 +294,6 @@ pub fn pe_sto(board: &Board) -> i32{
             }
         }
     }
-    let side_move = mg[side2move];
-    let side_not_move = mg[other_side2move];
-    println!("mg value of side to move is {side_move}");
-    println!("mg value of side not to move is {side_not_move}");
     //tapered evaluation
     let mg_score = mg[side2move] - mg[other_side2move];
     let eg_score = eg[side2move] - eg[other_side2move];
@@ -313,23 +309,5 @@ pub fn pe_sto(board: &Board) -> i32{
     eval
 }
 
-//peSTO eval taken from chessprogramming wiki
-
-//    /* evaluate each piece */
-//     for (int sq = 0; sq < 64; ++sq) {
-//         int pc = board[sq];
-//         if (pc != EMPTY) {
-//             mg[PCOLOR(pc)] += mg_table[pc][sq];
-//             eg[PCOLOR(pc)] += eg_table[pc][sq];
-//             gamePhase += gamephaseInc[pc];
-//         }
-//     }
-//
-//     /* tapered eval */
-//     int mgScore = mg[side2move] - mg[OTHER(side2move)];
-//     int egScore = eg[side2move] - eg[OTHER(side2move)];
-//     int mgPhase = gamePhase;
-//     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
-//     int egPhase = 24 - mgPhase;
-//     return (mgScore * mgPhase + egScore * egPhase) / 24;
-// }
+//piece square table is buggy and the engine evaluation has to be modified to take into account the depth. it prioritises material advantage over quicker checkmates.
+// it finds checkmates, but likes material advantage more

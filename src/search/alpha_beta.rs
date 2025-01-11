@@ -50,9 +50,9 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     //implement quiescent search here
     if board.status() == BoardStatus::Checkmate{//checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{
-            -20000
+            -60000
         }else{
-            20000
+            60000
         }
     }else if board.status() == BoardStatus::Stalemate {
         return 0
