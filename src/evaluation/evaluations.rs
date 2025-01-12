@@ -188,7 +188,7 @@ pub fn evaluate(board:&Board)->i32{
 }
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
-pub fn pesto(board: &Board) -> i32{
+pub fn pe_sto(board: &Board) -> i32{
     let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
     let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
     let game_phase_inc:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];
@@ -196,14 +196,6 @@ pub fn pesto(board: &Board) -> i32{
     let split_fen:Vec<&str> = board_fen.split_whitespace().collect();
     let fen = split_fen[0];
     //implement piece square_tables.
-    let side2move:usize = {
-        if split_fen[1] == "w"{
-            0
-        }else{
-            1
-        }
-    };
-    let other_side2move:usize = 1-side2move;
 
     let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
     let mut eg:[i32;2] = [0,0];//endgame table
@@ -295,8 +287,8 @@ pub fn pesto(board: &Board) -> i32{
         }
     }
     //tapered evaluation
-    let mg_score = mg[side2move] - mg[other_side2move];
-    let eg_score = eg[side2move] - eg[other_side2move];
+    let mg_score = mg[0] - mg[1];
+    let eg_score = eg[0] - eg[1];
     let mg_phase = {
         if game_phase > 24{
             24
@@ -308,6 +300,3 @@ pub fn pesto(board: &Board) -> i32{
     let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
     eval
 }
-
-//piece square table is buggy and the engine evaluation has to be modified to take into account the depth. it prioritises material advantage over quicker checkmates.
-// it finds checkmates, but likes material advantage more

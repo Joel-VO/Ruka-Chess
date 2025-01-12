@@ -20,12 +20,12 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and capt
     {//to make temp_board go out of scope once used.
         let temp_board = board.make_move_new(*mv);
         if temp_board.checkers().popcnt()>0{
-            score +=100;
+            score +=1000;
         }
     }
 
     if mv.get_promotion().is_some(){// can be fine-tuned
-        score+=50;
+        score+=1000;
     }
     score
 }

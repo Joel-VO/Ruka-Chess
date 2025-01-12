@@ -1,8 +1,10 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
-use crate::evaluation::evaluations::evaluate;
+// use crate::evaluation::evaluations::evaluate;
 use crate::search::move_ordering::moves_sorted;
+use crate::evaluation::evaluations::pe_sto;
 use rayon::prelude::*;//implements parallelization
-pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
+
+pub fn best_move(board:&Board, is_maximising:bool, depth:u8)->Option<ChessMove>{
     let alpha = i32::MIN;
     let beta = i32::MAX;
 
@@ -13,7 +15,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, max_depth);
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, depth);
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -44,20 +46,19 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
     best_move
 }
 
-fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8) ->i32{
-    //add in Principal variance search to speed up searching
-    //to be done after move ordering or else engine will perform worse.
+fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8) ->i32{//add max_depth
     //implement quiescent search here
-    if board.status() == BoardStatus::Checkmate{//checks checkmate condition first, then draw conditions
+    if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
+        let depth_offset:i32 = (max_depth as i32) - (depth as i32);
         if board.side_to_move() == Color::White{
-            -60000
+            i32::MIN + (10000*(7-(depth as i32)))//replace 7 with max_depth
         }else{
-            60000
+            i32::MAX - (10000*(7-(depth as i32)))
         }
-    }else if board.status() == BoardStatus::Stalemate {
+    }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth == 0{
-        return evaluate(board);//replace with quiescent search
+        return pe_sto(board);//replace with quiescent search
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
