@@ -4,7 +4,7 @@ use crate::search::move_ordering::moves_sorted;
 use crate::evaluation::evaluations::pe_sto;
 use rayon::prelude::*;//implements parallelization
 
-pub fn best_move(board:&Board, is_maximising:bool, depth:u8)->Option<ChessMove>{
+pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
     let alpha = i32::MIN;
     let beta = i32::MAX;
 
@@ -15,7 +15,7 @@ pub fn best_move(board:&Board, is_maximising:bool, depth:u8)->Option<ChessMove>{
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, depth);
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth);
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -46,18 +46,17 @@ pub fn best_move(board:&Board, is_maximising:bool, depth:u8)->Option<ChessMove>{
     best_move
 }
 
-fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8) ->i32{//add max_depth
+fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8, max_depth:u8) ->i32{//add max_depth
     //implement quiescent search here
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
-        let depth_offset:i32 = (max_depth as i32) - (depth as i32);
         if board.side_to_move() == Color::White{
-            i32::MIN + (10000*(7-(depth as i32)))//replace 7 with max_depth
+            -100000 + (depth as i32)//replace 7 with max_depth
         }else{
-            i32::MAX - (10000*(7-(depth as i32)))
+            100000 - (depth as i32)
         }
     }else if board.status() == BoardStatus::Stalemate{
         return 0
-    }else if depth == 0{
+    }else if depth == max_depth{
         return pe_sto(board);//replace with quiescent search
     }else{
         if is_maximising{
@@ -69,12 +68,12 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, false, depth-1)
+                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth-1);
+                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth);
                     if pvs_eval>alpha{
-                        alpha_beta_search(&current_position, alpha, beta, false, depth-1)
+                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)
                     }else{
                         pvs_eval
                     }
@@ -99,12 +98,12 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, true, depth-1)
+                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth-1);
+                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth);
                     if pvs_eval<beta{
-                        alpha_beta_search(&current_position, alpha, beta, true, depth-1)
+                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)
                     }else{
                         pvs_eval
                     }
