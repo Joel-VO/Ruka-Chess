@@ -7,7 +7,7 @@ use crate::search::alpha_beta::best_move;
 // use crate::evaluation::evaluations::pe_sto;
 
 fn main() {
-    let fen = "8/1p3nb1/8/7k/PP4n1/5KP1/3q4/4r3 b - - 0 43";//feed the fen to this...
+    let fen = "8/1p2k3/1p2p3/4p3/2P1Pbp1/8/1P6/3K3B b - - 0 58"; //feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
@@ -19,7 +19,7 @@ fn main() {
             }else{
                 true
             };
-            if let Some(mov) = best_move(&board, is_maximising, 7) {
+            if let Some(mov) = best_move(&board, is_maximising, 8) {
                 println!("best move is {mov}");
             } else {
                 println!("No moves available");
