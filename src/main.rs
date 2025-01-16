@@ -5,6 +5,7 @@ use std::str::FromStr;
 use chess::Board;
 use crate::search::alpha_beta::best_move;
 use crate::search::search_improvements::zobrist_hash::ZobristHashing;
+use dashmap::DashMap; //parallelize capable hash table
 fn main() {
     // let fen = "8/1p2k3/1p2p3/4p3/2P1Pbp1/8/1P6/3K3B b - - 0 58"; //feed the fen to this...
     // //checks whose turn it is currently and feeds to alpha beta
@@ -18,7 +19,7 @@ fn main() {
     //         }else{
     //             true
     //         };
-    //         if let Some(mov) = best_move(&board, is_maximising, 8) {
+    //         if let Some(mov) = best_move(&board, is_maximising, 5) {
     //             println!("best move is {mov}");
     //         } else {
     //             println!("No moves available");

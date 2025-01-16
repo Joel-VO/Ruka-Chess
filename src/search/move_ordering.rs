@@ -37,3 +37,4 @@ pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { // sorted array of possibl
     moves.sort_by_key(|mv| -score_move(board, mv)); //descending order
     moves
 }
+//make move ordering faster by eliminating the need for the vectors. use an array with max size 218(theoretical max of the number of moves...)

@@ -3,7 +3,7 @@ use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
 use crate::search::move_ordering::moves_sorted;
 use crate::evaluation::evaluations::pe_sto;
 use rayon::prelude::*;//implements parallelization
-
+//add in zobrist_key fn as global constant
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
     let alpha = i32::MIN;
     let beta = i32::MAX;
@@ -46,11 +46,14 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
     best_move
 }
 
-fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8, max_depth:u8) ->i32{//add max_depth
+fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8, max_depth:u8) ->i32{//add in current_hash:u64
     //implement quiescent search here
+
+    //add in condition to check transposition table for hash computed in parent
+
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{
-            -100000 + (depth as i32)//replace 7 with max_depth
+            -100000 + (depth as i32)
         }else{
             100000 - (depth as i32)
         }
@@ -63,7 +66,10 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut max_eval = i32::MIN;
             let legal_moves = moves_sorted(board);
             let mut first_move:bool = true;
+
             for mv in legal_moves{
+
+                // let hash = update_hash_move(current_hash, mv, zobrist_key, &board)
 
                 let eval = if first_move{
                     first_move=false;
@@ -81,7 +87,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
-
+                //update hash_table
                 if beta<=alpha{
                     break;
                 }
@@ -94,7 +100,9 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let legal_moves = MoveGen::new_legal(board);
             let mut first_move = true;
             for mv in legal_moves{
-                //pvs
+
+                // let hash = update_hash_move(current_hash, mv, zobrist_key, &board)
+
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
@@ -111,7 +119,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
-
+                //update hash_table
                 if beta<=alpha{
                     break;
                 }

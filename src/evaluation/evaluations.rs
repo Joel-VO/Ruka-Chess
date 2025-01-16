@@ -300,3 +300,4 @@ pub fn pe_sto(board: &Board) -> i32{
     let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
     eval
 }
+//add on more improvements like king safety bonus, a bonus for castling, passed pawn bonus using bitboards
