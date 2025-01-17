@@ -1,7 +1,7 @@
 //add in zobrist hashing to speed up move selection by storing previously reached positions
 // will speed up the search by a good margin in theory
 
-use chess::{Board, ChessMove, Piece, Square};
+use chess::{Board, ChessMove, Square};
 use rand::{thread_rng, Rng};
 
 const NUM_SQUARES:usize = 64;
@@ -27,7 +27,7 @@ impl ZobristHashing { //generates a random hash number every time its called and
     }
 }
 
-fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
+pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     let mut hash:u64 = 0;
 
     // add logic for each piece
@@ -46,7 +46,7 @@ fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     hash
 }
 
-fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&ZobristHashing, board:&Board)->u64{
+pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&ZobristHashing, board:&Board)->u64{
     ///When passing the board, make sure the move is not made in the board!!! otherwise the kernel will panic
     let mut new_hash = current_hash;
     let index_piece_start = move_made.get_source().to_int() as usize;
@@ -61,3 +61,4 @@ fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zobris
 
     new_hash
 }
+// maybe add in dash map initially then switch to 'flurry'

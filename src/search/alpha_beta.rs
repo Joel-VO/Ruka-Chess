@@ -1,12 +1,19 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
+use dashmap::DashMap;
 // use crate::evaluation::evaluations::evaluate;
 use crate::search::move_ordering::moves_sorted;
 use crate::evaluation::evaluations::pe_sto;
-use rayon::prelude::*;//implements parallelization
-//add in zobrist_key fn as global constant
-pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMove>{
+use rayon::prelude::*;
+use crate::search::search_improvements::zobrist_hash::updated_hash_move;
+//implements parallelization
+use crate::search::search_improvements::zobrist_hash::ZobristHashing;
+
+type TranspositionTable = DashMap<u64,(i32,u8)>;
+pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8, start_hash:u64, zobrist_key: &ZobristHashing)->Option<ChessMove>{
     let alpha = i32::MIN;
     let beta = i32::MAX;
+
+    let transposition_table:TranspositionTable = DashMap::new();
 
     //collecting possible root node moves(moves present in current position) and creates individual threads
     let legal_moves:Vec<ChessMove> = MoveGen::new_legal(&board).collect();
@@ -15,7 +22,8 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth);
+                let updated_hash = updated_hash_move(start_hash, &moves, zobrist_key, &current_position);
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth, &transposition_table, updated_hash, zobrist_key);
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -46,7 +54,8 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<ChessMo
     best_move
 }
 
-fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool, depth:u8, max_depth:u8) ->i32{//add in current_hash:u64
+fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
+                     depth:u8, max_depth:u8, transposition_table:&TranspositionTable, start_hash:u64,zobrist_key: &ZobristHashing) ->i32{//add in current_hash:u64
     //implement quiescent search here
 
     //add in condition to check transposition table for hash computed in parent
@@ -69,17 +78,17 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
             for mv in legal_moves{
 
-                // let hash = update_hash_move(current_hash, mv, zobrist_key, &board)
+                let hash = updated_hash_move(current_hash, &mv, zobrist_key, &board);//change this
 
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)
+                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash,zobrist_key)
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth);
+                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth, &transposition_table,hash,zobrist_key);
                     if pvs_eval>alpha{
-                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)
+                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash,zobrist_key)
                     }else{
                         pvs_eval
                     }
@@ -101,17 +110,17 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut first_move = true;
             for mv in legal_moves{
 
-                // let hash = update_hash_move(current_hash, mv, zobrist_key, &board)
+                let hash = update_hash_move(current_hash, mv, zobrist_key, &board);//change this
 
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)
+                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth, &transposition_table, hash,zobrist_key)
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth);
+                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth, &transposition_table, hash,zobrist_key);
                     if pvs_eval<beta{
-                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)
+                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth, &transposition_table,hash,zobrist_key)
                     }else{
                         pvs_eval
                     }
