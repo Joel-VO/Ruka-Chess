@@ -8,7 +8,6 @@ const NUM_SQUARES:usize = 64;
 const PIECE_NO:usize = 12;//12 pieces
 const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
 const EN_PASSANT:usize = 8;// 8 files for castling
-const DEPTH:usize = 0;// depth factor that's checked...used for replacement strategy.
 
 pub struct ZobristHashing{
     pub piece_square: [[u64;NUM_SQUARES];PIECE_NO],
@@ -38,26 +37,27 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
         // this is unsafe but only because of values greater than 64, which won't be violated here
         if let Some(piece) = board.piece_on(position){// to check if such a piece exists
             let piece_val:usize = piece.to_index();
-            println!("{piece_val} at {position} with {piece} at {square}");
             hash^=zobrist_key.piece_square[piece_val][square];//XOR hash with the randomly generated value
         }
     }
     //add logic for castling
+
     //add logic for en passant
+
     hash
 }
 
 pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&ZobristHashing, board:&Board)->u64{
-    ///When passing the board, make sure the move is not made in the board!!! otherwise the kernel will panic
+    //When passing the board, make sure the move is not made in the board!!! otherwise the kernel will panic
     let mut new_hash = current_hash;
     let index_piece_start = move_made.get_source().to_int() as usize;
     let index_piece_end = move_made.get_dest().to_int() as usize;
     if let Some(piece) = board.piece_on(move_made.get_source()) {
         let piece_index = piece.to_index();
-        new_hash ^= zobrist_key.piece_square[index_piece_start][piece_index];
-        new_hash ^= zobrist_key.piece_square[index_piece_end][piece_index];
+        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_end];
+        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_start];
     } else {
-        panic!("Source square is empty! Invalid move.");//flip the piece to take piece from, as its wrong.
+        panic!("Source square is empty! Invalid move.");
     }
 
     new_hash

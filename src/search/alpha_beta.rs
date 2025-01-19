@@ -21,8 +21,8 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8, start_hash:u64,
         .par_iter()//iterates and creates a thread
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
+                let updated_hash = updated_hash_move(start_hash, &moves, zobrist_key, &board);
                 let current_position = board.make_move_new(moves);
-                let updated_hash = updated_hash_move(start_hash, &moves, zobrist_key, &current_position);
                 let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth, &transposition_table, updated_hash, zobrist_key);
                 (Some(moves),eval)//if move exists, then returns it
             }
@@ -55,16 +55,17 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8, start_hash:u64,
 }
 
 fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
-                     depth:u8, max_depth:u8, transposition_table:&TranspositionTable, start_hash:u64,zobrist_key: &ZobristHashing) ->i32{//add in current_hash:u64
+                     depth:u8, max_depth:u8, transposition_table:&TranspositionTable,
+                     start_hash:u64,zobrist_key: &ZobristHashing) ->i32{//add in current_hash:u64
     //implement quiescent search here
 
     //add in condition to check transposition table for hash computed in parent
     if let Some(output) = transposition_table.get(&start_hash){
         let (eval, hash_depth) = *output;
         if hash_depth > depth {
+            // return eval;//some bug in the TT code, has to be fixed.The eval is wrong.
             println!("hit");
         }
-
     }
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{
@@ -84,17 +85,17 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
             for mv in legal_moves{
 
-                let hash = updated_hash_move(start_hash, &mv, zobrist_key, &board);//change this
+                let hash = updated_hash_move(start_hash, &mv, zobrist_key, &board);
 
                 let eval = if first_move{
                     first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash,zobrist_key)
+                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash, zobrist_key)
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth, &transposition_table,hash,zobrist_key);
+                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth, &transposition_table, hash, zobrist_key);
                     if pvs_eval>alpha{
-                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash,zobrist_key)
+                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth, &transposition_table, hash, zobrist_key)
                     }else{
                         pvs_eval
                     }
@@ -103,7 +104,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
                 //update hash_table
-                transposition_table.insert(hash,(max_eval,max_depth - depth));//newly added
+                transposition_table.insert(hash,(max_eval,max_depth - depth));//change max depth as needed when quiescent search is applied.
                 if beta<=alpha{
                     break;
                 }
