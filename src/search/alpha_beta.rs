@@ -59,7 +59,13 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     //implement quiescent search here
 
     //add in condition to check transposition table for hash computed in parent
+    if let Some(output) = transposition_table.get(&start_hash){
+        let (eval, hash_depth) = *output;
+        if hash_depth > depth {
+            println!("hit");
+        }
 
+    }
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{
             -100000 + (depth as i32)
@@ -78,7 +84,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
             for mv in legal_moves{
 
-                let hash = updated_hash_move(current_hash, &mv, zobrist_key, &board);//change this
+                let hash = updated_hash_move(start_hash, &mv, zobrist_key, &board);//change this
 
                 let eval = if first_move{
                     first_move=false;
@@ -97,6 +103,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
                 //update hash_table
+                transposition_table.insert(hash,(max_eval,max_depth - depth));//newly added
                 if beta<=alpha{
                     break;
                 }
@@ -110,7 +117,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut first_move = true;
             for mv in legal_moves{
 
-                let hash = update_hash_move(current_hash, mv, zobrist_key, &board);//change this
+                let hash = updated_hash_move(start_hash, &mv, zobrist_key, &board);//change this
 
                 let eval = if first_move{
                     first_move=false;
@@ -128,7 +135,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
-                //update hash_table
+                transposition_table.insert(hash,(min_eval,max_depth - depth));//newly added
                 if beta<=alpha{
                     break;
                 }
@@ -143,3 +150,4 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 // fn quiescent_search(){
 //
 // }
+//check the whole code... urgent...defcon 1 and all

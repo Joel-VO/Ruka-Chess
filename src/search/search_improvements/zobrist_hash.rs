@@ -38,7 +38,8 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
         // this is unsafe but only because of values greater than 64, which won't be violated here
         if let Some(piece) = board.piece_on(position){// to check if such a piece exists
             let piece_val:usize = piece.to_index();
-            hash^=zobrist_key.piece_square[square][piece_val];//XOR hash with the randomly generated value
+            println!("{piece_val} at {position} with {piece} at {square}");
+            hash^=zobrist_key.piece_square[piece_val][square];//XOR hash with the randomly generated value
         }
     }
     //add logic for castling
@@ -56,7 +57,7 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
         new_hash ^= zobrist_key.piece_square[index_piece_start][piece_index];
         new_hash ^= zobrist_key.piece_square[index_piece_end][piece_index];
     } else {
-        panic!("Source square is empty! Invalid move.");
+        panic!("Source square is empty! Invalid move.");//flip the piece to take piece from, as its wrong.
     }
 
     new_hash
