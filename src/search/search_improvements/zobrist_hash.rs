@@ -25,7 +25,7 @@ impl ZobristHashing { //generates a random hash number every time its called and
         }
     }
 }
-
+//A special mention to my girlfriend... who has supported me in making this bot, has put up with my obsession in creating Ruka and has been my pillar in its creation.
 pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     let mut hash:u64 = 0;
 

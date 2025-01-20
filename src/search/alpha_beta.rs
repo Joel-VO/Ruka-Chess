@@ -8,7 +8,7 @@ use crate::search::search_improvements::zobrist_hash::updated_hash_move;
 //implements parallelization
 use crate::search::search_improvements::zobrist_hash::ZobristHashing;
 
-type TranspositionTable = DashMap<u64,(i32,u8)>;
+type TranspositionTable = DashMap<u64,(i32,u8,bool)>;//maybe add in side that moved? or side to move??
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8, start_hash:u64, zobrist_key: &ZobristHashing)->Option<ChessMove>{
     let alpha = i32::MIN;
     let beta = i32::MAX;
@@ -60,11 +60,11 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     //implement quiescent search here
 
     //add in condition to check transposition table for hash computed in parent
-    if let Some(output) = transposition_table.get(&start_hash){
-        let (eval, hash_depth) = *output;
-        if hash_depth > depth {
-            // return eval;//some bug in the TT code, has to be fixed.The eval is wrong.
-            println!("hit");
+    if let Some(output) = transposition_table.get(&start_hash){//function doesn't seem to work as intended
+        let (eval, hash_depth,side_to_move) = *output;
+        if hash_depth >= depth && (is_maximising == side_to_move){//the bool condition is wrong and has to be adjusted for current player
+            return eval;
+            //one solution is to have 2 seperate TT for white and black and call condition as needed.
         }
     }
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
@@ -104,7 +104,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
                 //update hash_table
-                transposition_table.insert(hash,(max_eval,max_depth - depth));//change max depth as needed when quiescent search is applied.
+                transposition_table.insert(hash,(max_eval,max_depth - depth,false));//logic issues
                 if beta<=alpha{
                     break;
                 }
@@ -136,7 +136,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
-                transposition_table.insert(hash,(min_eval,max_depth - depth));//newly added
+                transposition_table.insert(hash,(min_eval,max_depth - depth,true));//logic issues
                 if beta<=alpha{
                     break;
                 }
@@ -145,8 +145,8 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
+
 //add in quiescent search
-//sometimes, engine doesn't do the mate. some bug in the code
 
 // fn quiescent_search(){
 //
