@@ -1,7 +1,7 @@
 //add in zobrist hashing to speed up move selection by storing previously reached positions
 // will speed up the search by a good margin in theory
 
-use chess::{Board, ChessMove, Square};
+use chess::{Board, ChessMove, Square,Color};
 use rand::{thread_rng, Rng};
 
 const NUM_SQUARES:usize = 64;
@@ -13,6 +13,7 @@ pub struct ZobristHashing{
     pub piece_square: [[u64;NUM_SQUARES];PIECE_NO],
     pub castling_rights: [u64; CASTLING_RIGHTS],
     pub en_passant_files: [u64; EN_PASSANT],
+    pub side_to_move:u64
 }
 impl ZobristHashing { //generates a random hash number every time its called and this is used as a
     // key to compute the respective hash value. Use of 64 bits means collisions are 1 in a 100 million or so
@@ -22,6 +23,7 @@ impl ZobristHashing { //generates a random hash number every time its called and
             piece_square:[[0;NUM_SQUARES];PIECE_NO].map(|row| row.map(|_| rng.gen())),
             castling_rights: [0; CASTLING_RIGHTS].map(|_| rng.gen()),
             en_passant_files: [0; EN_PASSANT].map(|_| rng.gen()),
+            side_to_move: rng.gen()
         }
     }
 }
@@ -41,9 +43,15 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
         }
     }
     //add logic for castling
-
+    // for (i, right) in board.castle_rights().iter().enumerate() {
+    //     if *right {
+    //         hash ^= zobrist_key.castling_rights[i];
+    //     }
+    // }
     //add logic for en passant
-
+    if board.side_to_move() == Color::Black{
+        hash ^= zobrist_key.side_to_move
+    }
     hash
 }
 
@@ -59,7 +67,8 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
     } else {
         panic!("Source square is empty! Invalid move.");
     }
-
+    new_hash ^= zobrist_key.side_to_move;
     new_hash
 }
 // maybe add in dash map initially then switch to 'flurry'
+//zobrist hashing is either wrong, or its

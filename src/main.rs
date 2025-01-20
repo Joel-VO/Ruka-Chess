@@ -22,7 +22,7 @@ fn main() {
             let zobrist_table = ZobristHashing::new_table();
             let hash = compute_hash_value(&board, &zobrist_table);
 
-            if let Some(mov) = best_move(&board, is_maximising, 7, hash, &zobrist_table) {
+            if let Some(mov) = best_move(&board, is_maximising, 6, hash, &zobrist_table) {
                 println!("best move is {mov}");
             } else {
                 println!("No moves available");
