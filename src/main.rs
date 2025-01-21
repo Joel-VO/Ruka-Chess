@@ -4,7 +4,6 @@ mod search;
 use std::str::FromStr;
 use chess::{Board};
 use crate::search::alpha_beta::best_move;
-use crate::search::search_improvements::zobrist_hash::{ZobristHashing, compute_hash_value};
 fn main() {
     let fen = "4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24"; //feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
@@ -19,11 +18,9 @@ fn main() {
                 true
             };
 
-            let zobrist_table = ZobristHashing::new_table();
-            let hash = compute_hash_value(&board, &zobrist_table);
 
-            if let Some(mov) = best_move(&board, is_maximising, 6, hash, &zobrist_table) {
-                println!("best move is {mov}");
+            if let Some((mov, eval)) = best_move(&board, is_maximising, 7) {
+                println!("best move is {mov} with eval as {eval}");
             } else {
                 println!("No moves available");
             }
