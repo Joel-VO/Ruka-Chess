@@ -62,8 +62,8 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
     let index_piece_end = move_made.get_dest().to_int() as usize;
     if let Some(piece) = board.piece_on(move_made.get_source()) {
         let piece_index = piece.to_index();
-        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_end];
         new_hash ^= zobrist_key.piece_square[piece_index][index_piece_start];
+        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_end];
     } else {
         panic!("Source square is empty! Invalid move.");
     }

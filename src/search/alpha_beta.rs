@@ -61,9 +61,9 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     //add in condition to check transposition table for hash computed in parent
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{
-            -100000 + (depth as i32)
+            -400000 + (depth as i32)
         }else{
-            100000 - (depth as i32)
+            400000 - (depth as i32)
         }
     }else if board.status() == BoardStatus::Stalemate{
         return 0
@@ -137,9 +137,3 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
-
-//add in quiescent search
-
-// fn quiescent_search(){
-//
-// }
