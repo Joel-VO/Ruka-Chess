@@ -1,13 +1,14 @@
 mod evaluation;
 mod search;
 
+use std::path::is_separator;
 use std::str::FromStr;
 use chess::{Board};
 use crate::search::alpha_beta::best_move;
 use crate::search::search_improvements::quiescent_search::quiescent_search;
 use crate::evaluation::evaluations::pe_sto;
 fn main() {
-    let fen = "rnb1kb1r/ppp3pp/3Ppp2/3p4/3P4/8/PPP1P1PP/RNB1KBNR b KQkq - 0 8"; //feed the fen to this...
+    let fen = "rnbqkbnr/ppp1pppp/8/8/2pP4/1Q6/PP2PPPP/RNB1KBNR b KQkq - 1 3"; //feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
@@ -32,7 +33,7 @@ fn main() {
             //     let hash = updated_hash_move(current_hash, &mv, &zobrist_table, &board);
             //     println!("{hash}");
             // }
-            let search = quiescent_search(&board, i32::MIN, i32::MAX, 0, 3);
+            let search = quiescent_search(&board, i32::MIN, i32::MAX, 0, 3,false);
             println!("{search}");
             let eval = pe_sto(&board);
             println!("{eval}")
