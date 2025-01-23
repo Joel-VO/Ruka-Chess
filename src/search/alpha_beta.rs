@@ -56,7 +56,6 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
 
 fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
                      depth:u8, max_depth:u8) ->i32{//add in current_hash:u64
-    //implement quiescent search here
 
     //add in condition to check transposition table for hash computed in parent
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
