@@ -1,12 +1,12 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
-use dashmap::DashMap;
+// use dashmap::DashMap;
 use crate::search::move_ordering::moves_sorted;
-use crate::evaluation::evaluations::pe_sto;
+// use crate::evaluation::evaluations::pe_sto;
 use rayon::prelude::*;
-
+use crate::search::search_improvements::quiescent_search::q_search;
 //implements parallelization
 
-type TranspositionTable = DashMap<u64,(i32,u8)>;
+// type TranspositionTable = DashMap<u64,(i32,u8)>;
 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
     let alpha = i32::MIN;
@@ -19,7 +19,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth);
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 0,max_depth);
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -67,7 +67,8 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth == max_depth{
-        return pe_sto(board);//replace with quiescent search
+        // return pe_sto(board);//replace with quiescent search
+        return q_search(board, alpha, beta, depth, depth+2, is_maximising)
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
@@ -126,7 +127,6 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
                 // println!("{hash} has {eval} and {is_maximising}");
-
 
                 if beta<=alpha{
                     break;

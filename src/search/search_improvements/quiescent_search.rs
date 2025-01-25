@@ -2,23 +2,39 @@
 //will increase search times, but not much and moves will be better as critical captures are looked further into, improving the search result.
 //not all nodes are looked into so not too expensive
 
-use chess::{Board, ChessMove, MoveGen};
+use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
 use crate::evaluation::evaluations::pe_sto;
 
 fn tactical_moves(board: &Board)->Vec<ChessMove>{
     ///returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
     let move_gen = MoveGen::new_legal(board);
     let mut avail_moves:Vec<ChessMove> = Vec::new();
-    for moves in move_gen {
-        if board.piece_on(moves.get_dest()).is_some() {
-            avail_moves.push(moves);
+    if board.checkers().popcnt()>0{
+        avail_moves = move_gen.collect();
+        // println!("This is reached");
+    }else{
+        for moves in move_gen{
+            if board.piece_on(moves.get_dest()).is_some() {
+                avail_moves.push(moves);
+            }
         }
     }
     avail_moves
 }
 
-pub fn quiescent_search(board: &Board, mut alpha:i32, mut beta:i32, depth:u8, max_depth:u8, is_maximising:bool) ->i32{
-
+pub fn q_search(board: &Board, mut alpha:i32, mut beta:i32, depth:u8, max_depth:u8, is_maximising:bool) ->i32{
+    // need to add in moves that are checks and moves to block checks. it doesn't see moves
+    // that help block the threat in a position so the checkmates are kind of weak. Not losing, but not great.
+    // adding depth means regular checkmate checks detect the checkmate and suddenly it works perfectly.
+    if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
+        return if board.side_to_move() == Color::White {
+            -400000 + (depth as i32)
+        } else {
+            400000 - (depth as i32)
+        }
+    }else if board.status() == BoardStatus::Stalemate {
+        return 0;
+    }
     let moves_tactical = tactical_moves(board);
 
     if depth >= max_depth || moves_tactical.len()==0{
@@ -59,9 +75,9 @@ pub fn quiescent_search(board: &Board, mut alpha:i32, mut beta:i32, depth:u8, ma
     };
 
     for moves in moves_tactical{
-        // println!("{moves}");
+        // println!("{moves}");// for debugging, keep this here
         let current_position = board.make_move_new(moves);
-        let eval:i32 = quiescent_search(&current_position, alpha, beta, depth+1, max_depth, !is_maximising);
+        let eval:i32 = q_search(&current_position, alpha, beta, depth+1, max_depth, !is_maximising);
         if is_maximising{//alpha beta updation
             best_val = best_val.max(eval);
             alpha = alpha.max(eval);
