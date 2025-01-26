@@ -68,7 +68,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         return 0
     }else if depth == max_depth{
         // return pe_sto(board);//replace with quiescent search
-        return q_search(board, alpha, beta, depth, depth+2, is_maximising)
+        return q_search(board, alpha, beta, depth, depth+3, is_maximising)
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
@@ -105,7 +105,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
         }else{
             let mut min_eval= i32::MAX;
-            let legal_moves = MoveGen::new_legal(board);
+            let legal_moves = moves_sorted(board);
             let mut first_move = true;
             for mv in legal_moves{
 

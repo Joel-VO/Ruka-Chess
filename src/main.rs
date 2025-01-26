@@ -7,7 +7,7 @@ use crate::search::alpha_beta::best_move;
 // use crate::search::search_improvements::quiescent_search::q_search;
 // use crate::evaluation::evaluations::pe_sto;
 fn main() {
-    let fen = "8/1pB4k/5b1n/8/P5Pn/1P5K/4q3/5r2 b - - 0 39"; //feed the fen to this...
+    let fen = "4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24"; //feed the fen to this...
     //checks whose turn it is currently and feeds to alpha beta
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
@@ -19,7 +19,7 @@ fn main() {
             }else{
                 true
             };
-            if let Some((mov, eval)) = best_move(&board, is_maximising, 5) {//currently working at a theoretical depth of 8
+            if let Some((mov, eval)) = best_move(&board, is_maximising, 6) {//currently working at a theoretical depth of 8
                 // in under a second...damn impressive...
                 println!("best move is {mov} with eval as {eval}");
             } else {
