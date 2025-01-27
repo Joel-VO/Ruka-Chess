@@ -1,10 +1,8 @@
-use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
+use chess::{Board, BoardStatus, ChessMove, Color};
 // use dashmap::DashMap;
 use crate::search::move_ordering::moves_sorted;
-// use crate::evaluation::evaluations::pe_sto;
-use rayon::prelude::*;
+use rayon::prelude::*;//implements parallelization
 use crate::search::search_improvements::quiescent_search::q_search;
-//implements parallelization
 
 // type TranspositionTable = DashMap<u64,(i32,u8)>;
 
@@ -13,7 +11,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
     let beta = i32::MAX;
 
     //collecting possible root node moves(moves present in current position) and creates individual threads
-    let legal_moves:Vec<ChessMove> = MoveGen::new_legal(&board).collect();
+    let legal_moves:Vec<ChessMove> = moves_sorted(board);
     let (best_move, _best_eval) = legal_moves//(best_move, eval) returns a tuple with best_move and the eval
         .par_iter()//iterates and creates a thread
         .map(//searches using alpha beta and returns the value for each root node move thread
@@ -126,7 +124,6 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
                 min_eval = min_eval.min(eval);
                 beta = beta.min(eval);
-                // println!("{hash} has {eval} and {is_maximising}");
 
                 if beta<=alpha{
                     break;
