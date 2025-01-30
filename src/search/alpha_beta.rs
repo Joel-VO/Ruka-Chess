@@ -83,7 +83,9 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 }else{
                     let current_position:Board = board.make_move_new(mv);
                     let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth);
-                    if pvs_eval>alpha{
+                    if pvs_eval >= beta{
+                        return pvs_eval;
+                    }else if pvs_eval > alpha{
                         alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)
                     }else{
                         pvs_eval
@@ -115,7 +117,9 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 }else{
                     let current_position:Board = board.make_move_new(mv);
                     let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth);
-                    if pvs_eval<beta{
+                    if pvs_eval <= alpha{
+                        return pvs_eval;
+                    }else if pvs_eval < beta{
                         alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)
                     }else{
                         pvs_eval
