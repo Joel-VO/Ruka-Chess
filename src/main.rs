@@ -11,6 +11,7 @@ fn main() {
     let mut fen:String = String::new();
     io::stdin().read_line(&mut fen).expect("Data not a string");
     //  4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24
+    // rn3r1k/p2q4/bp2pp1p/3pP3/P2NRQ2/1Pb2NPP/5PB1/3R2K1 w - - 1 22
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
 
@@ -26,7 +27,7 @@ fn main() {
             let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
 
             let now = Instant::now();//starts the time.
-            for depth_iterate in 2..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
+            for depth_iterate in 5..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
                 let mut elapsed = now.elapsed();//checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
                 if elapsed<=max_time{
@@ -37,6 +38,7 @@ fn main() {
                         break;
                     }
                 }else{
+                    println!("max depth was: {depth_iterate}");
                     break
                 }
             }

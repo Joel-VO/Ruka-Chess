@@ -5,92 +5,30 @@
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
 use crate::evaluation::evaluations::pe_sto;
 
-fn tactical_moves(board: &Board)->Vec<ChessMove>{//add in checks as well
+fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and test this out !!!!!!!!!!!!!!!!!!
     ///returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
     let move_gen = MoveGen::new_legal(board);
     let mut avail_moves:Vec<ChessMove> = Vec::new();
     if board.checkers().popcnt()>0{
         avail_moves = move_gen.collect();
-        // println!("This is reached");
     }else{
-        for moves in move_gen{
-            if board.piece_on(moves.get_dest()).is_some() {
+        for moves in move_gen{// add in logic for en-passant and promotions...not there now...
+            let capture = board.piece_on(moves.get_dest());
+            let en_passant = board.en_passant();
+            let promotion = moves.get_promotion();
+            if capture.is_some() || en_passant.is_some() || promotion.is_some(){
                 avail_moves.push(moves);
+            }else{
+                let temp_board = board.make_move_new(moves);
+                if temp_board.checkers().popcnt()>0{
+                    avail_moves.push(moves);
+                }
             }
         }
     }
     avail_moves
 }
 
-// pub fn q_search(board: &Board, mut alpha:i32, mut beta:i32, depth:u8, max_depth:u8, is_maximising:bool) ->i32{
-//     // need to add in moves that are checks and moves to block checks. it doesn't see moves
-//     // that help block the threat in a position so the checkmates are kind of weak. Not losing, but not great.
-//     // adding depth means regular checkmate checks detect the checkmate and suddenly it works perfectly.
-//     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
-//         return if board.side_to_move() == Color::White {
-//             -400000 + (depth as i32)
-//         } else {
-//             400000 - (depth as i32)
-//         }
-//     }else if board.status() == BoardStatus::Stalemate {
-//         return 0;
-//     }
-//     let moves_tactical = tactical_moves(board);
-//
-//     if depth >= max_depth || moves_tactical.len()==0{
-//         //greater than or equal to, to prevent un stoppable search extension in case of some error.
-//         // This part was overlooked in the CPW pseudocode(according to what i read) and this is necessary to prevent moves that are egregious...
-//         return pe_sto(board);
-//     }
-//
-//     let stand_pat:i32 = pe_sto(board);
-//
-//     //https://www.chessprogramming.org/Quiescence_Search
-//     //change this.... its wrong...best
-//     if is_maximising{//performing standard alpha beta init
-//         if stand_pat >= beta{
-//             return stand_pat //fail-soft and fail hard condition
-//         }
-//         if stand_pat > alpha{
-//             alpha = stand_pat
-//         }
-//     }else{
-//         // reverses all that's done in the above statements... as negamax pseudocode was given in CPW.
-//         // the reverse should work for regular alpha beta... as it does according to this code...
-//         // the exact workings are beyond me but got the general idea of a search window using stand_pat and beta as a window.
-//         if stand_pat <= alpha{
-//             return stand_pat
-//         }
-//         if stand_pat < beta{
-//             beta = stand_pat
-//         }
-//     }
-//
-//
-//     let mut best_val = if is_maximising{
-//         // val init for best_val. Standard alpha beta style
-//         i32::MIN
-//     }else{
-//         i32::MAX
-//     };
-//
-//     for moves in moves_tactical{
-//         // println!("{moves}");// for debugging, keep this here
-//         let current_position = board.make_move_new(moves);
-//         let eval:i32 = q_search(&current_position, alpha, beta, depth+1, max_depth, !is_maximising);
-//         if is_maximising{//alpha beta updation
-//             best_val = best_val.max(eval);
-//             alpha = alpha.max(eval);
-//         }else{
-//             best_val = best_val.min(eval);
-//             beta = beta.min(eval);
-//         }
-//         if beta<=alpha{
-//             break
-//         }
-//     }
-//     best_val
-// }
 pub fn q_search(board: &Board, mut alpha: i32, mut beta: i32, depth: u8, max_depth: u8, is_maximising: bool) -> i32 {
     // Terminal node checks
     if board.status() == BoardStatus::Checkmate {
