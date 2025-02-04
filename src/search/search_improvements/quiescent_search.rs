@@ -3,20 +3,29 @@
 //not all nodes are looked into so not too expensive
 
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
+use chess::Piece::Pawn;
 use crate::evaluation::evaluations::pe_sto;
 
-fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and test this out !!!!!!!!!!!!!!!!!!
+pub fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and test this out !!!!!!!!!!!!!!!!!!
     ///returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
     let move_gen = MoveGen::new_legal(board);
     let mut avail_moves:Vec<ChessMove> = Vec::new();
     if board.checkers().popcnt()>0{
         avail_moves = move_gen.collect();
     }else{
-        for moves in move_gen{// add in logic for en-passant and promotions...not there now...
+        for moves in move_gen{
             let capture = board.piece_on(moves.get_dest());
-            let en_passant = board.en_passant();
+
+            let en_passant:bool = if board.en_passant().is_some(){
+                let dissimilar_file:bool = (moves.get_source().get_file()) != (moves.get_dest().get_file());
+                let target_capture:bool = board.piece_on(moves.get_dest()) == None;
+                let piece_start:bool = board.piece_on(moves.get_source()) == Some(Pawn);
+                piece_start && dissimilar_file && target_capture
+            }else{
+                false
+            };
             let promotion = moves.get_promotion();
-            if capture.is_some() || en_passant.is_some() || promotion.is_some(){
+            if capture.is_some() || en_passant || promotion.is_some(){
                 avail_moves.push(moves);
             }else{
                 let temp_board = board.make_move_new(moves);

@@ -14,7 +14,7 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and capt
     let mut score:i16 = 0;
     if let Some(captured_piece) = board.piece_on(mv.get_dest()){//MVV-LVA sorting
         let attacker = board.piece_on(mv.get_source()).unwrap();
-        score += piece_value(captured_piece) * 10 - piece_value(attacker);
+        score += piece_value(captured_piece) * 100 - piece_value(attacker);
     }
 
     {//to make temp_board go out of scope once used.
