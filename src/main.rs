@@ -5,10 +5,10 @@ use std::str::FromStr;
 use chess::{Board, ChessMove};
 use crate::search::alpha_beta::best_move;
 use std::{io, time::Instant, time::Duration};
-use crate::search::search_improvements::quiescent_search::tactical_moves;
+// use crate::search::search_improvements::quiescent_search::tactical_moves;
 fn main() {
     println!("Enter fen string ");
-    let max_time = Duration::new(1,0);//seconds and nano-seconds adjustments
+    let max_time = Duration::new(10,0);//seconds and nano-seconds adjustments
     let mut fen:String = String::new();
     io::stdin().read_line(&mut fen).expect("Data not a string");
     //  4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24
@@ -29,7 +29,7 @@ fn main() {
             let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
 
             let now = Instant::now();//starts the time.
-            for depth_iterate in 5..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
+            for depth_iterate in 7..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
                 let mut elapsed = now.elapsed();//checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
                 if elapsed<=max_time{

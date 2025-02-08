@@ -11,13 +11,12 @@
 // add in LMR, reducing depth searched
 use chess::ChessMove;
 
-pub fn lm_pruning(moves_sorted:Vec<ChessMove>, depth:u8)->Vec<ChessMove>{
-    if depth <= 3{
-        moves_sorted
-    }else if moves_sorted.len()>10{//very aggressive pruning... fine tune.
-        moves_sorted[0..5].to_vec()
+pub fn lmr(moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
+    if depth > 3{
+        let updated_depth = 3;
+        updated_depth
     }else{
-        moves_sorted
+        depth
     }
 }
 //add in conditions for checks, etc. this has to be carefully handled or the engine will make erroneous blunders down the line

@@ -3,7 +3,7 @@ use chess::{Board, BoardStatus, ChessMove, Color};
 use crate::search::move_ordering::moves_sorted;
 use rayon::prelude::*;//implements parallelization
 use crate::search::search_improvements::quiescent_search::q_search;
-
+use crate::search::search_improvements::lmr::lmr;
 // type TranspositionTable = DashMap<u64,(i32,u8)>;
 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
@@ -11,7 +11,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
     let beta = i32::MAX;
 
     //collecting possible root node moves(moves present in current position) and creates individual threads
-    let legal_moves:Vec<ChessMove> = moves_sorted(board,0,true);
+    let legal_moves:Vec<ChessMove> = moves_sorted(board,0);
     let (best_move, _best_eval) = legal_moves//(best_move, eval) returns a tuple with best_move and the eval
         .par_iter()//iterates and creates a thread
         .map(//searches using alpha beta and returns the value for each root node move thread
@@ -64,15 +64,19 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }else if board.status() == BoardStatus::Stalemate{
         return 0
-    }else if depth == max_depth{
-        // return pe_sto(board);//replace with quiescent search
-        return q_search(board, alpha, beta, depth, depth+3, is_maximising)
+    }else if depth >= max_depth{
+        return q_search(board, alpha, beta, depth, max_depth+3, is_maximising)
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
             let mut first_move:bool = true;
-            let legal_moves = moves_sorted(board,depth,pv_node);
+            let legal_moves = moves_sorted(board,depth);//pv node is used for LMP, delete this to go back to normal search mode
 
+            //new added LMR
+            let lmr_depth:u8 = {
+                let added_val:u8 = lmr(&legal_moves, depth);
+                depth+added_val
+            };
 
             for mv in legal_moves{
 
@@ -82,7 +86,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                     alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth,true)//PV node so full search with no LMR
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, depth+1, max_depth,false);//PVS with LMR
+                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, lmr_depth+1, max_depth,false);//PVS with LMR
                     if pvs_eval >= beta{
                         pvs_eval
                     }else if pvs_eval > alpha{
@@ -95,7 +99,6 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                 max_eval = max_eval.max(eval);
                 alpha = alpha.max(eval);
 
-                //update hash_table
                 if beta<=alpha{
                     break;
                 }
@@ -105,10 +108,16 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
         }else{
             let mut min_eval= i32::MAX;
-            let legal_moves = moves_sorted(board, depth,pv_node);//added depth
+            let legal_moves = moves_sorted(board, depth);//added depth
             let mut first_move = true;
-            for mv in legal_moves{
 
+            //new added LMR
+            let lmr_depth:u8 = {
+                let added_val:u8 = lmr(&legal_moves, depth);
+                depth+added_val
+            };
+
+            for mv in legal_moves{
 
                 let eval = if first_move{
                     first_move=false;
@@ -116,7 +125,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                     alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth,true)//PVS with no LMR
                 }else{
                     let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth,false);//PVS with LMR
+                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth,false);//PVS with LMR
                     if pvs_eval <= alpha{
                         pvs_eval
                     }else if pvs_eval < beta{
