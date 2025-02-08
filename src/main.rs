@@ -19,36 +19,36 @@ fn main() {
 
         match Board::from_str(fen.as_str()){
         Ok(board) => {//checks condition to see if board is legal
-            // //checks whose turn it is currently and feeds to alpha beta
-            // let is_maximising = if piece_to_move == "b"{
-            //     false
-            // }else{
-            //     true
-            // };
-            // // iterative deepening code.
-            // let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
-            //
-            // let now = Instant::now();//starts the time.
-            // for depth_iterate in 5..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
-            //     let mut elapsed = now.elapsed();//checks if time constraint is passed.
-            //     //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
-            //     if elapsed<=max_time{
-            //         if let Some((mov, evaluation)) = best_move(&board, is_maximising, depth_iterate) {
-            //             (best_mov, eval) = (mov, evaluation);
-            //         } else {
-            //             println!("No moves available");
-            //             break;
-            //         }
-            //     }else{
-            //         println!("max depth was: {depth_iterate}");
-            //         break
-            //     }
-            // }
-            // println!("best move is {best_mov} with eval as {eval}");
-            let moves = tactical_moves(&board);
-            for mv in moves{
-                println!("{mv}");
+            //checks whose turn it is currently and feeds to alpha beta
+            let is_maximising = if piece_to_move == "b"{
+                false
+            }else{
+                true
+            };
+            // iterative deepening code.
+            let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
+
+            let now = Instant::now();//starts the time.
+            for depth_iterate in 5..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
+                let mut elapsed = now.elapsed();//checks if time constraint is passed.
+                //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
+                if elapsed<=max_time{
+                    if let Some((mov, evaluation)) = best_move(&board, is_maximising, depth_iterate) {
+                        (best_mov, eval) = (mov, evaluation);
+                    } else {
+                        println!("No moves available");
+                        break;
+                    }
+                }else{
+                    println!("max depth was: {depth_iterate}");
+                    break
+                }
             }
+            println!("best move is {best_mov} with eval as {eval}");
+            // let moves = tactical_moves(&board);
+            // for mv in moves{
+            //     println!("{mv}");
+            // }
         }
         Err(err) => {
             println!("error in fen : {err}");//can be changed later to make sure errors are handled

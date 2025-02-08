@@ -25,13 +25,14 @@ pub fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and te
                 false
             };
             let promotion = moves.get_promotion();
-            if capture.is_some() || en_passant || promotion.is_some(){
-                avail_moves.push(moves);
+            let check_moves:bool = if (board.make_move_new(moves)).checkers().popcnt()>0{
+                true
             }else{
-                let temp_board = board.make_move_new(moves);
-                if temp_board.checkers().popcnt()>0{
-                    avail_moves.push(moves);
-                }
+              false
+            };
+
+            if capture.is_some() || en_passant || promotion.is_some() || check_moves{
+                avail_moves.push(moves);
             }
         }
     }
