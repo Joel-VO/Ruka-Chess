@@ -7,6 +7,7 @@ use crate::search::search_improvements::lmr::lmr;
 // type TranspositionTable = DashMap<u64,(i32,u8)>;
 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
+    std::env::set_var("RAYON_NUM_THREADS", "8");
     let alpha = i32::MIN;
     let beta = i32::MAX;
 

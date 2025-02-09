@@ -13,8 +13,8 @@ use chess::ChessMove;
 
 pub fn lmr(moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
     if depth > 3{
-        let updated_depth = 3;
-        updated_depth
+        let updated_depth:f64 = 0.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.35;//add in logic for tactical vs quiet
+        updated_depth as u8
     }else{
         depth
     }
