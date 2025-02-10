@@ -5,7 +5,6 @@ use std::str::FromStr;
 use chess::{Board, ChessMove};
 use crate::search::alpha_beta::best_move;
 use std::{io, time::Instant, time::Duration};
-// use crate::search::search_improvements::quiescent_search::tactical_moves;
 fn main() {
     println!("Enter fen string ");
     let max_time = Duration::new(1,0);//seconds and nano-seconds adjustments
@@ -30,7 +29,7 @@ fn main() {
 
             let now = Instant::now();//starts the time.
             for depth_iterate in 6..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
-                let mut elapsed = now.elapsed();//checks if time constraint is passed.
+                let elapsed = now.elapsed();//checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
                 if elapsed<=max_time{
                     if let Some((mov, evaluation)) = best_move(&board, is_maximising, depth_iterate) {
@@ -45,10 +44,6 @@ fn main() {
                 }
             }
             println!("best move is {best_mov} with eval as {eval}");
-            // let moves = tactical_moves(&board);
-            // for mv in moves{
-            //     println!("{mv}");
-            // }
         }
         Err(err) => {
             println!("error in fen : {err}");//can be changed later to make sure errors are handled

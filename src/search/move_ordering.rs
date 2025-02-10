@@ -29,7 +29,7 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and capt
     }
     score
 }
-pub fn moves_sorted(board:&Board, depth:u8) -> Vec<ChessMove> { // sorted array of possible moves
+pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { // sorted array of possible moves
     let move_gen = MoveGen::new_legal(board);
     let mut moves: Vec<ChessMove> = move_gen.collect();
     //ideally convert this to an array to improve speed...issue is size has to be fixed, but that's

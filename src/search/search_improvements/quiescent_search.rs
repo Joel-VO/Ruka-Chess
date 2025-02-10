@@ -7,7 +7,7 @@ use chess::Piece::Pawn;
 use crate::evaluation::evaluations::pe_sto;
 
 pub fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and test this out !!!!!!!!!!!!!!!!!!
-    ///returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
+    //returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
     let move_gen = MoveGen::new_legal(board);
     let mut avail_moves:Vec<ChessMove> = Vec::new();
     if board.checkers().popcnt()>0{
@@ -25,7 +25,7 @@ pub fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and te
                 false
             };
             let promotion = moves.get_promotion();
-            let check_moves:bool = if (board.make_move_new(moves)).checkers().popcnt()>0{
+            let check_moves:bool = if board.make_move_new(moves).checkers().popcnt()>0{
                 true
             }else{
               false
