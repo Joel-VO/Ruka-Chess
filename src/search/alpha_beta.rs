@@ -147,3 +147,20 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
+
+fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
+           depth:u8, max_depth:u8) ->i32{
+
+}
+// int negaMax( int depth ) {
+// if ( depth == 0 ) return evaluate();
+// int max = -oo;
+// for ( all moves)  {
+// score = -negaMax( depth - 1 );
+// if( score > max )
+// max = score;
+// }
+// return max;
+// }
+// score = materialWeight * (numWhitePieces - numBlackPieces) * who2move
+// where who2move = 1 for white, and who2move = -1 for black.
