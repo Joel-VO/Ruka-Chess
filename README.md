@@ -10,6 +10,11 @@ Clone the repository:
 git clone https://github.com/Joel-VO/Ruka-Chess.git
 cd ruka
 ```
+To run it directly, run:
+```shell
+cargo run --release
+```
+Or, you can do as follows:
 Build the project:
 
 ```shell
