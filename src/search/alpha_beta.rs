@@ -150,7 +150,19 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
 fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
            depth:u8, max_depth:u8) ->i32{
+    if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
+        if board.side_to_move() == Color::White{
+            -400000 + (depth as i32)
+        }else{
+            400000 - (depth as i32)
+        }
+    }else if board.status() == BoardStatus::Stalemate{
+        return 0
+    }else if depth >= max_depth{
+        return q_search(board, alpha, beta, depth, max_depth+3, is_maximising)
+    }else{
 
+    }
 }
 // int negaMax( int depth ) {
 // if ( depth == 0 ) return evaluate();
