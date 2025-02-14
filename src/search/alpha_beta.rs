@@ -18,7 +18,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth);//not sure of the true here
+                let eval = negamax(&current_position, alpha, beta, !is_maximising, 1,max_depth);//not sure of the true here
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -151,7 +151,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
            depth:u8, max_depth:u8) ->i32{
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
-        if board.side_to_move() == Color::White{
+        if board.side_to_move() == Color::White{ // check the checkmate conditions
             -400000 + (depth as i32)
         }else{
             400000 - (depth as i32)
@@ -159,9 +159,33 @@ fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+3, is_maximising)
+        return q_search(board, alpha, beta, depth, depth+3, is_maximising)
     }else{
 
+        let mut best_value = i32::MIN;
+        // let mut first_move:bool = true;
+        let legal_moves = moves_sorted(board);//pv node is used for LMP, delete this to go back to normal search mode
+
+        //new added LMR
+        let lmr_depth:u8 = {
+            let added_val:u8 = lmr(board,&legal_moves, depth);
+            depth+added_val
+        };
+
+        for mv in legal_moves{
+            let current_position:Board = board.make_move_new(mv);
+            let eval = -negamax(&current_position, -beta, -alpha,!is_maximising, depth+1, max_depth);
+            if eval>best_value{
+                best_value = eval;
+                if eval > alpha{
+                    alpha = eval;
+                }
+            }
+            if eval >= beta{
+                break
+            }
+        }
+        best_value
     }
 }
 // int negaMax( int depth ) {
