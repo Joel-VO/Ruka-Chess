@@ -1,10 +1,8 @@
 use chess::{Board, BoardStatus, ChessMove, Color};
-// use dashmap::DashMap;
 use crate::search::move_ordering::moves_sorted;
 use rayon::prelude::*;//implements parallelization
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
-// type TranspositionTable = DashMap<u64,(i32,u8)>;
 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
     std::env::set_var("RAYON_NUM_THREADS", "8");
@@ -148,7 +146,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     }
 }
 
-fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
+fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,//has a bug...sometimes gives best move, sometimes the worst move.
            depth:u8, max_depth:u8) ->i32{
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
         if board.side_to_move() == Color::White{ // check the checkmate conditions
@@ -188,15 +186,3 @@ fn negamax(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
         best_value
     }
 }
-// int negaMax( int depth ) {
-// if ( depth == 0 ) return evaluate();
-// int max = -oo;
-// for ( all moves)  {
-// score = -negaMax( depth - 1 );
-// if( score > max )
-// max = score;
-// }
-// return max;
-// }
-// score = materialWeight * (numWhitePieces - numBlackPieces) * who2move
-// where who2move = 1 for white, and who2move = -1 for black.

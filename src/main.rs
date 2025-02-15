@@ -28,7 +28,7 @@ fn main() {
             let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
 
             let now = Instant::now();//starts the time.
-            for depth_iterate in 1..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
+            for depth_iterate in 8..100{//the timing logic can be fine-tuned a lot based on available time, position etc.
                 let elapsed = now.elapsed();//checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
                 if elapsed<=max_time{
