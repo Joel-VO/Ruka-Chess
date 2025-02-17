@@ -2,11 +2,10 @@
 //will increase search times, but not much and moves will be better as critical captures are looked further into, improving the search result.
 //not all nodes are looked into so not too expensive
 
-use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
-use chess::Piece::Pawn;
+use chess::{Board, BoardStatus, ChessMove, Color, MoveGen,Piece::Pawn};
 use crate::evaluation::evaluations::pe_sto;
 
-pub fn tactical_moves(board: &Board)->Vec<ChessMove>{//call this function and test this out !!!!!!!!!!!!!!!!!!
+fn tactical_moves(board: &Board)->Vec<ChessMove>{
     //returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
     let move_gen = MoveGen::new_legal(board);
     let mut avail_moves:Vec<ChessMove> = Vec::new();
