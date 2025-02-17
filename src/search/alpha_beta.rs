@@ -170,89 +170,23 @@ fn abs(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
                 let lmr_depth:u8 = lmr(&board,&legal_moves, depth)+depth;
                 let best_eval = if is_maximising {i32::MIN} else {i32::MIN};
                 for mv in legal_moves {
-
-                }
-                32
-            }
-        }
-    }
-    // below is all template code. will be deleted at completion
-        if is_maximising{
-            let mut max_eval = i32::MIN;
-            let mut first_move:bool = true;
-            let legal_moves = moves_sorted(board);//pv node is used for LMP, delete this to go back to normal search mode
-
-            //new added LMR
-            let lmr_depth:u8 = {
-                let added_val:u8 = lmr(&board,&legal_moves, depth);
-                depth+added_val
-            };
-
-            for mv in legal_moves{
-
-                let eval = if first_move{
-                    first_move=false;
                     let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//PV node so full search with no LMR
-                }else{
-                    let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, lmr_depth+1, max_depth);//PVS with LMR
-                    if pvs_eval >= beta{
-                        pvs_eval
-                    }else if pvs_eval > alpha{
-                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//full search, no LMR
+                    let eval = if first_move{
+                        first_move=false;
+                        let current_position:Board = board.make_move_new(mv);
+                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//PV node so full search with no LMR
                     }else{
-                        pvs_eval
-                    }
-                };
-
-                max_eval = max_eval.max(eval);
-                alpha = alpha.max(eval);
-
-                if beta<=alpha{
-                    break;
+                        let (pvs_alpha, pvs_beta, pvs_depth) = if is_maximising{
+                            (alpha, alpha+1, lmr_depth+1)
+                        } else {
+                            (beta-1, beta, lmr_depth+1)
+                        };
+                        let pvs_eval:i32 = alpha_beta_search(&current_position, pvs_alpha, pvs_beta, !is_maximising, pvs_depth, max_depth);
+                        32//comment out
+                    };
                 }
+                32//comment out
             }
-            max_eval
-
-
-        }else{
-            let mut min_eval= i32::MAX;
-            let legal_moves = moves_sorted(board);//added depth
-            let mut first_move = true;
-
-            //new added LMR
-            let lmr_depth:u8 = {
-                let added_val:u8 = lmr(&board,&legal_moves, depth);
-                depth+added_val
-            };
-
-            for mv in legal_moves{
-
-                let eval = if first_move{
-                    first_move=false;
-                    let current_position:Board = board.make_move_new(mv);
-                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)//PVS with no LMR
-                }else{
-                    let current_position:Board = board.make_move_new(mv);
-                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth);//PVS with LMR
-                    if pvs_eval <= alpha{
-                        pvs_eval
-                    }else if pvs_eval < beta{
-                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)//full search with LMR removed
-                    }else{
-                        pvs_eval
-                    }
-                };
-
-                min_eval = min_eval.min(eval);
-                beta = beta.min(eval);
-
-                if beta<=alpha{
-                    break;
-                }
-            }
-            min_eval
         }
     }
 }
