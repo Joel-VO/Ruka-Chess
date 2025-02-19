@@ -1,4 +1,4 @@
-use chess::Board;
+use chess::{Board,ALL_SQUARES};
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
 pub fn pe_sto(board: &Board) -> i32{
@@ -115,4 +115,17 @@ pub fn pe_sto(board: &Board) -> i32{
     //add in king safety and pawn structure ideas
 
     eval
+}
+
+
+pub fn evaluation_func(board: &Board){
+    let mg_value:[i32;6] = [82, 337, 365, 477, 1025,  0];
+    let eg_value:[i32;6] = [94, 281, 297, 512,  936,  0];
+    let game_phase_inc:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];//adjust weights to be powers of 2, so bitwise division can be done.
+    let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
+    let mut eg:[i32;2] = [0,0];//endgame table
+    let mut game_phase = 0;
+    for sq in ALL_SQUARES.iter(){
+        //replace with code.
+    }
 }
