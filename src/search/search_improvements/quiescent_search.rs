@@ -3,7 +3,7 @@
 //not all nodes are looked into so not too expensive
 
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen,Piece::Pawn};
-use crate::evaluation::evaluations::pe_sto;
+use crate::evaluation::evaluations::{pe_sto, evaluation_func};
 
 fn tactical_moves(board: &Board)->Vec<ChessMove>{
     //returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
@@ -51,7 +51,7 @@ pub fn q_search(board: &Board, mut alpha: i32, mut beta: i32, depth: u8, max_dep
     }
 
     // Stand-pat evaluation
-    let stand_pat = pe_sto(board);
+    let stand_pat = evaluation_func(board);
 
     // Base case: max depth reached or no tactical moves
     let moves_tactical = tactical_moves(board);
