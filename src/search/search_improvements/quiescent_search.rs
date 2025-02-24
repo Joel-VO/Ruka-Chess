@@ -3,7 +3,7 @@
 //not all nodes are looked into so not too expensive
 
 use chess::{Board, BoardStatus, ChessMove, Color, MoveGen,Piece::Pawn};
-use crate::evaluation::evaluations::{pe_sto, evaluation_func};
+use crate::evaluation::evaluations::{evaluation_func};
 
 fn tactical_moves(board: &Board)->Vec<ChessMove>{
     //returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
