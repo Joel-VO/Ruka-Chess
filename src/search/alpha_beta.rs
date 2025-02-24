@@ -5,7 +5,7 @@ use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
-    std::env::set_var("RAYON_NUM_THREADS", "16");
+    std::env::set_var("RAYON_NUM_THREADS", "32");
     let alpha = i32::MIN;
     let beta = i32::MAX;
 

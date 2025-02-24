@@ -41,7 +41,7 @@ fn tactical_position(board:&Board, moves_sorted:&Vec<ChessMove>) -> bool{//call 
     is_tactical
 }
 pub fn lmr(board:&Board,moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
-    if depth > 3{
+    if depth > 7{
         let updated_depth:f64;
         let is_tactical:bool = tactical_position(board, moves_sorted);
         if is_tactical{
@@ -55,12 +55,3 @@ pub fn lmr(board:&Board,moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
         depth
     }
 }
-//add in conditions for checks, etc. this has to be carefully handled or the engine will make erroneous blunders down the line
-
-// fn null_move_pruning{
-//
-// }
-// Weiss reduces by 0.20 + ln(depth) * ln(move number) / 3.35 for captures and promotions and 1.35 + ln(depth) * ln(move number) / 2.75 for quiet moves.
-// Ethereal reduces by 0.7844 + ln(depth) * ln(moves played) / 2.4696 for quiet moves and 3 (or 2 if the move gave check) for captures and promotions
-// Senpai reduces by one ply for the first 6 moves and by depth / 3 for remaining moves.
-// Fruit Reloaded uses formula: uint8( sqrt(double(depth-1)) + sqrt(double(moves-1))); for non-PV nodes. In PV-nodes it reduces by 2/3 of this value.

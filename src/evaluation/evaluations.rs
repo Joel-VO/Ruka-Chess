@@ -1,4 +1,4 @@
-use chess::{Board,ALL_SQUARES};
+use chess::{Board,ALL_SQUARES,CastleRights,Color,File};
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
 pub fn pe_sto(board: &Board) -> i32{
@@ -143,8 +143,6 @@ pub fn evaluation_func(board: &Board) -> i32{
             let piece_index = piece.to_index();
             let table_index = TABLE_INDEX[piece_index][color_index];
             let sq_index = sq.to_index();
-            // println!("{piece}");
-            // println!("{sq_index}");
             mg[color_index] += MG_PIECE_SQUARE_TABLES[table_index][63-sq_index] + MG_VALUES[piece_index];
             eg[color_index] += EG_PIECE_SQUARE_TABLES[table_index][63-sq_index] + EG_VALUES[piece_index];
             game_phase += GAME_PHASE_INC[table_index];
@@ -155,5 +153,19 @@ pub fn evaluation_func(board: &Board) -> i32{
     let mg_phase = game_phase.min(24);
     let eg_phase = 24-mg_phase;
     let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
-    eval
+    let complete_eval = additional_eval_capability(board,eval, mg_phase);
+    complete_eval
 }
+
+pub fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
+    //king-side safety
+    let color:Color = board.side_to_move();
+    let rights = board.castle_rights(color);
+    let king_side_castle = rights == CastleRights::KingSide;
+    let queen_side_castle = rights == CastleRights::QueenSide;
+
+    let king_square = board.king_square(color).get_file();
+    println!("{king_side_castle} or {queen_side_castle}");
+    eval + 32
+}
+//|| rights == CastleRights::Both
