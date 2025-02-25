@@ -27,16 +27,19 @@ Run the engine:
 ```
 
 ## Features ##
-* `Bitboard Representation`: Efficient data structure for managing chess positions.
-* `Alpha-Beta Pruning`: Optimized move selection with search depth control.
-* `Transposition Table`: 
-* `Rust Crates Integration`: Leveraging specialized crates for move generation and FEN parsing.
-* `UCI Compatibility`: Supports standard chess communication protocols for testing and gameplay.
-* `Compact Design`: Prioritizes speed and resource efficiency.
+* `Chess Crate`: Efficient data structures and functions for managing chess board and move generation.
+* `UCI compatible`: Supports UCI format.
+* `Move ordering`: Uses mover ordering to prioritise checks and captures.
+* `MiniMax`: Uses the age-old minimax algorithm for search tree.
+* `Principal Variation Search`: Uses PVS to reduce search space without sacrificing accuracy.
+* `Reduction algorithms`: Uses LMR to reduce depth to search based on whether the position is tactical or not.
+* `Pruning`: Uses alpha beta pruning and Null move pruning.
+* `Evaluation`: Uses Pesto evaluation with its piece square tables taken from the Chess Programming Wiki. 
+
 ## Getting Started ##
 ### Prerequisites ###
-Rust (latest stable version)
-A UCI-compatible chess GUI (e.g., Arena or Cute Chess).
+* Rust (latest stable version)
+* A UCI-compatible chess GUI (e.g., Arena or Cute Chess).
 
 ## Usage ##
 #### To use it with a chess GUI:
@@ -44,8 +47,10 @@ A UCI-compatible chess GUI (e.g., Arena or Cute Chess).
 Add Ruka as a new engine in your preferred GUI.
 Provide a FEN position or start a new game.
 Ruka will generate moves and respond to commands such as go and stop.
-Example UCI Command:
 
+#### Example UCI Command: ####
+uci (server) -> id name Ruka-Chess (engine) -> id author JoelVO (engine) -> uciok (engine)-> isready (server)-> readyok (engine)-> 
+
+ucinewgame (server) -> position startpos (server) -> go maketime 1000 (server) -> bestmove e2e4 (engine)
 #### To play against Ruka:
-Go to [lichess.org](#https://lichess.org/) and go to [Ruka](#https://lichess.org/@/Ruka-Chess) or search directly for ruka in the search bar above.
-Challenge her to a game and she'll play her best :)
+Go to [lichess.org](#https://lichess.org/@/Ruka-Chess) and Challenge her to a game. Check if she's online before issuing her a challenge. 
