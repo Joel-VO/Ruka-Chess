@@ -44,9 +44,7 @@ Run the engine:
 ## Usage ##
 #### To use it with a chess GUI:
 
-Add Ruka as a new engine in your preferred GUI.
-Provide a FEN position or start a new game.
-Ruka will generate moves and respond to commands such as go and stop.
+After compiling, run commands in the uci format to get outputs. If you have a locally running chess GUI, use that, else, use the lichess-bot for configuring Ruka.
 
 #### Example UCI Command: ####
 uci (server) -> id name Ruka-Chess (engine) -> id author JoelVO (engine) -> uciok (engine)-> isready (server)-> readyok (engine)-> 
@@ -54,3 +52,4 @@ uci (server) -> id name Ruka-Chess (engine) -> id author JoelVO (engine) -> ucio
 ucinewgame (server) -> position startpos (server) -> go maketime 1000 (server) -> bestmove e2e4 (engine)
 #### To play against Ruka:
 Go to [lichess.org](#https://lichess.org/@/Ruka-Chess) and Challenge her to a game. Check if she's online before issuing her a challenge. 
+

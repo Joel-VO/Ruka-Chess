@@ -28,8 +28,8 @@ fn main() {
         }
         // UCI initialization
         else if input == "uci" {
-            println!("id name MyEngine");
-            println!("id author MyName");
+            println!("id name Ruka-Chess");
+            println!("id author Joel-VO");
             // Additional options can be listed here if needed
             println!("uciok");
         }
@@ -94,16 +94,16 @@ fn main() {
         // Go command: start the search
         else if input.starts_with("go") {
             // Default move time is 1 second.
-            let mut movetime = Duration::new(1, 0);
-            let tokens: Vec<&str> = input.split_whitespace().collect();
-            // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
-            if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
-                if index + 1 < tokens.len() {
-                    if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-                        movetime = Duration::from_millis(ms);
-                    }
-                }
-            }
+            let movetime = Duration::new(5, 0);//changed from mut to immutable. change back after work is done.
+            // let tokens: Vec<&str> = input.split_whitespace().collect();
+            // // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
+            // if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
+            //     if index + 1 < tokens.len() {
+            //         if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+            //             movetime = Duration::from_millis(ms);
+            //         }
+            //     }
+            // }
 
             // Determine whose turn it is (assume white is maximising)
             let is_maximising = match board.side_to_move() {
@@ -116,7 +116,7 @@ fn main() {
             let mut best_mov = ChessMove::default();
             let mut eval = 0;
             // You can adjust the depth range as needed.
-            for depth in 1..100 {
+            for depth in 7..100 {
                 if now.elapsed() > movetime {
                     // Optionally, print depth info for debugging:
                     // eprintln!("Reached depth {} after {:?}", depth, now.elapsed());
