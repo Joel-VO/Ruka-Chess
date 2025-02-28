@@ -134,7 +134,12 @@ fn main() {
     //         println!("bestmove {}", best_mov);
     //     }
     // }
-    let fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
+    //
+    //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 //0
+    //rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1 //32
+    //rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1 //35
+    //
+    let fen = "rnbqkbnr/pp1ppppp/8/2p5/2P5/8/PP1PPPPP/RNBQKBNR w KQkq - 0 2";
     match Board::from_str(fen) {
         Ok(board) => {
             let eval = evaluation_func(&board);

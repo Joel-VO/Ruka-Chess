@@ -27,8 +27,8 @@ pub fn evaluation_func(board: &Board) -> i32{
             let piece_index = piece.to_index();
             let table_index = TABLE_INDEX[piece_index][color_index];
             let sq_index = sq.to_index();
-            mg[color_index] += MG_PIECE_SQUARE_TABLES[table_index][63-sq_index] + MG_VALUES[piece_index];
-            eg[color_index] += EG_PIECE_SQUARE_TABLES[table_index][63-sq_index] + EG_VALUES[piece_index];
+            mg[color_index] += MG_PIECE_SQUARE_TABLES[table_index][sq_index] + MG_VALUES[piece_index];
+            eg[color_index] += EG_PIECE_SQUARE_TABLES[table_index][sq_index] + EG_VALUES[piece_index];
             game_phase += GAME_PHASE_INC[table_index];
         }
     }
