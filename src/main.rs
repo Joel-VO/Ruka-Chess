@@ -3,8 +3,8 @@ mod search;
 
 use std::str::FromStr;
 use chess::{Board, ChessMove, Color};
-use crate::search::alpha_beta::best_move;
-use std::{io, time::{Duration, Instant}};
+// use crate::search::alpha_beta::best_move;
+// use std::{io, time::{Duration, Instant}};
 use evaluation::evaluations::evaluation_func;
 
 fn main() {
