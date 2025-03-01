@@ -71,8 +71,12 @@ fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
     }else{
         false
     };
-    if castled && game_phase > 10{
-        resultant_eval += 100;
+    if castled && game_phase > 12{
+        resultant_eval += 50;
     }
+
+    //add in doubled pawn logic later and other positional concepts
+
+
     resultant_eval
 }

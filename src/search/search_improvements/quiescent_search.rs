@@ -55,6 +55,7 @@ pub fn q_search(board: &Board, mut alpha: i32, mut beta: i32, depth: u8, max_dep
 
     // Base case: max depth reached or no tactical moves
     let moves_tactical = tactical_moves(board);
+
     if depth >= max_depth || moves_tactical.is_empty() {
         return stand_pat;
     }

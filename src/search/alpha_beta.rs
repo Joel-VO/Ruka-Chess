@@ -1,6 +1,6 @@
 use chess::{Board, BoardStatus, ChessMove, Color};
 use crate::search::move_ordering::moves_sorted;
-use rayon::prelude::*;//implements parallelization
+use rayon::prelude::*;
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
 
@@ -64,7 +64,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+3, is_maximising)
+        return q_search(board, alpha, beta, depth, max_depth+4, is_maximising)//made max_depth even due to odd even rule
     }else{
         if is_maximising{
             let mut max_eval = i32::MIN;
@@ -73,14 +73,22 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
 
             //new added LMR
             let lmr_depth:u8 = lmr(&board,&legal_moves, depth)+depth;
+            // after the first few moves only add in the lmr concept. don't want reduced depth for better moves.
+
+            let mut move_number = 0;
 
             for mv in legal_moves{
+                move_number += 1;
                 let current_position:Board = board.make_move_new(mv);
                 let eval = if first_move{
                     first_move=false;
                     alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//PV node so full search with no LMR
                 }else{
-                    let pvs_eval = alpha_beta_search(&current_position, alpha, alpha+1, false, lmr_depth+1, max_depth);//PVS with LMR
+                    let pvs_eval = if move_number<4 {
+                        alpha_beta_search(&current_position, alpha, alpha + 1, false, depth+1, max_depth)
+                    }else{
+                        alpha_beta_search(&current_position, alpha, alpha + 1, false, lmr_depth + 1, max_depth)
+                    };//PVS with LMR
                     if pvs_eval >= beta{
                         pvs_eval
                     }else if pvs_eval > alpha{
@@ -106,15 +114,24 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut first_move = true;
 
             //new added LMR
+
+
             let lmr_depth:u8 = lmr(&board,&legal_moves, depth)+depth;
 
+            let mut move_number = 0;
+
             for mv in legal_moves{
+                move_number += 1;
                 let current_position:Board = board.make_move_new(mv);
                 let eval = if first_move{
                     first_move=false;
                     alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)//PVS with no LMR
                 }else{
-                    let pvs_eval = alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth);//PVS with LMR
+                    let pvs_eval = if move_number<4{
+                        alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth)
+                    }else{
+                        alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth)
+                    };//PVS with LMR
                     if pvs_eval <= alpha{
                         pvs_eval
                     }else if pvs_eval < beta{

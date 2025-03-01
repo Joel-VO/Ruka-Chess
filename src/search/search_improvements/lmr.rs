@@ -1,7 +1,3 @@
-//not sure if this is a good idea at all...
-//LMP can backfire badly…
-
-
 //so do checks for tactical positions, checks have to have all moves, etc... pruning has to be controlled...
 // add in conditions for not doing LMR in PV node and then apply this otherwise.
 
@@ -47,7 +43,7 @@ pub fn lmr(board:&Board,moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
         if is_tactical{
             updated_depth = 0.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.35;
         }else{
-            updated_depth = 1.35 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/2.75;
+            updated_depth = 0.85 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.0;
         }
         //add in logic for tactical vs quiet
         updated_depth as u8
