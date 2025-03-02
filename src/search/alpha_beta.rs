@@ -10,7 +10,7 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
     let beta = i32::MAX;
 
     //collecting possible root node moves(moves present in current position) and creates individual threads
-    let legal_moves:Vec<ChessMove> = moves_sorted(board);
+    let legal_moves = moves_sorted(board);
     let (best_move, _best_eval) = legal_moves//(best_move, eval) returns a tuple with best_move and the eval
         .par_iter()//iterates and creates a thread
         .map(//searches using alpha beta and returns the value for each root node move thread

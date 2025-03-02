@@ -1,14 +1,11 @@
 //so do checks for tactical positions, checks have to have all moves, etc... pruning has to be controlled...
 // add in conditions for not doing LMR in PV node and then apply this otherwise.
 
+use arrayvec::ArrayVec;
 //https://chess.stackexchange.com/questions/15856/implementing-late-move-reduction-lmr-inside-iterative-deepening
-//refer this
-//has to be tuned down a lot as 5 is very aggressive...
-// add in LMR, reducing depth searched
 use chess::{Board, ChessMove};
 use chess::Piece::Pawn;
-fn tactical_position(board:&Board, moves_sorted:&Vec<ChessMove>) -> bool{//call this function and test this out !!!!!!!!!!!!!!!!!!
-    //returns a Vec<ChessMove> of all legal captures in a position. Can be modified to add checks as well to improve search quality.
+fn tactical_position(board:&Board, moves_sorted:&ArrayVec<ChessMove,218>) -> bool{
     let mut is_tactical:bool = false;
     for moves in moves_sorted{
         let capture = board.piece_on(moves.get_dest());
@@ -36,14 +33,14 @@ fn tactical_position(board:&Board, moves_sorted:&Vec<ChessMove>) -> bool{//call 
     }
     is_tactical
 }
-pub fn lmr(board:&Board,moves_sorted:&Vec<ChessMove>, depth:u8)->u8{
+pub fn lmr(board:&Board,moves_sorted:&ArrayVec<ChessMove,218>, depth:u8)->u8{
     if depth > 7{
         let updated_depth:f64;
         let is_tactical:bool = tactical_position(board, moves_sorted);
         if is_tactical{
             updated_depth = 0.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.35;
         }else{
-            updated_depth = 0.85 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.0;
+            updated_depth = 1.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/2.5;
         }
         //add in logic for tactical vs quiet
         updated_depth as u8

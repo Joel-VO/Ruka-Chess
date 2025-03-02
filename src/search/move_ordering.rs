@@ -1,4 +1,5 @@
 use chess::{Board, ChessMove, MoveGen, Piece};
+use arrayvec::ArrayVec;
 fn piece_value(piece:Piece) -> i16{
     match piece{//values have to be fine-tuned
         Piece::Pawn => 10,
@@ -29,11 +30,11 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and capt
     }
     score
 }
-pub fn moves_sorted(board:&Board) -> Vec<ChessMove> { // sorted array of possible moves
+pub fn moves_sorted(board:&Board) -> ArrayVec<ChessMove,218> { // sorted array of possible moves
     let move_gen = MoveGen::new_legal(board);
-    let mut moves: Vec<ChessMove> = move_gen.collect();
-    //ideally convert this to an array to improve speed...issue is size has to be fixed, but that's
-    // not an issue, the sorting has to be done using merge sort or similar algorithm to speed up sorting
+    // let mut moves: Vec<ChessMove> = move_gen.collect();
+    let mut moves = ArrayVec::<ChessMove,218>::new();
+    moves.extend(move_gen);
     moves.sort_by_key(|mv| -score_move(board, mv)); //descending order
     moves
 }
