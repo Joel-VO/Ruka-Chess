@@ -2,9 +2,10 @@ mod evaluation;
 mod search;
 
 use std::str::FromStr;
-use chess::{Board, ChessMove, Color};
+use chess::{Board, ChessMove, Color, Square};
 use crate::search::alpha_beta::best_move;
 use std::{io, time::{Duration, Instant}};
+use search::search_improvements::zobrist_hash::{ZobristHashing, compute_hash_value, updated_hash_move};
 // use evaluation::evaluations::evaluation_func;
 
 fn main() {
@@ -149,36 +150,53 @@ fn main() {
 
     match Board::from_str(fen.as_str()){
         Ok(board) => {//checks condition to see if board is legal
-            //checks whose turn it is currently and feeds to alpha beta
-            let is_maximising = if piece_to_move == "b"{
-                false
-            }else{
-                true
-            };
-            // iterative deepening code.
-            let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
+            // //checks whose turn it is currently and feeds to alpha beta
+            // let is_maximising = if piece_to_move == "b"{
+            //     false
+            // }else{
+            //     true
+            // };
+            // // iterative deepening code.
+            // let (mut best_mov,mut eval):(ChessMove, i32) = (ChessMove::default(), 0);
+            //
+            // let now = Instant::now();//starts the time.
+            // for depth_iterate in (6..100).step_by(2){//the timing logic can be fine-tuned a lot based on available time, position etc.
+            //     let elapsed = now.elapsed();//checks if time constraint is passed.
+            //     //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
+            //     if elapsed<=max_time{
+            //         if let Some((mov, evaluation)) = best_move(&board, is_maximising, depth_iterate) {
+            //             (best_mov, eval) = (mov, evaluation);
+            //         } else {
+            //             println!("No moves available");
+            //             break;
+            //         }
+            //     }else{
+            //         println!("max depth was: {depth_iterate}");
+            //         break
+            //     }
+            // }
+            // println!("best move is {best_mov} with eval as {eval}");
+            //
+            // //don't delete yet...the eval extensions has to be updated further.
+            // // let eval = additional_eval_capability(&board, 0,24);
+            // // println!("{eval}");
 
-            let now = Instant::now();//starts the time.
-            for depth_iterate in (6..100).step_by(2){//the timing logic can be fine-tuned a lot based on available time, position etc.
-                let elapsed = now.elapsed();//checks if time constraint is passed.
-                //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
-                if elapsed<=max_time{
-                    if let Some((mov, evaluation)) = best_move(&board, is_maximising, depth_iterate) {
-                        (best_mov, eval) = (mov, evaluation);
-                    } else {
-                        println!("No moves available");
-                        break;
-                    }
-                }else{
-                    println!("max depth was: {depth_iterate}");
-                    break
-                }
-            }
-            println!("best move is {best_mov} with eval as {eval}");
 
-            //don't delete yet...the eval extensions has to be updated further.
-            // let eval = additional_eval_capability(&board, 0,24);
-            // println!("{eval}");
+            // rnb1kbnr/pppp1ppp/8/4p1N1/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3
+            //
+            let mut new_test_board = Board::default();
+            new_test_board = new_test_board.make_move_new(ChessMove::new(Square::E2,Square::E4, None));
+            new_test_board = new_test_board.make_move_new(ChessMove::new(Square::E7,Square::E5, None));
+            new_test_board = new_test_board.make_move_new(ChessMove::new(Square::G1,Square::F3, None));
+            new_test_board = new_test_board.make_move_new(ChessMove::new(Square::D8,Square::G5, None));
+            new_test_board = new_test_board.make_move_new(ChessMove::new(Square::F3,Square::G5, None));
+
+            let zobrist_hashing_keys = ZobristHashing::new_table();
+            println!("The values of the positions for each piece");
+            let hash = compute_hash_value(&board, &zobrist_hashing_keys);
+            let test_hash = compute_hash_value(&new_test_board, &zobrist_hashing_keys);
+            println!("{hash} and {test_hash}");
+
         }
         Err(err) => {
             println!("error in fen : {err}");//can be changed later to make sure errors are handled

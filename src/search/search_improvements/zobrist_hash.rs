@@ -1,8 +1,5 @@
-//add in zobrist hashing to speed up move selection by storing previously reached positions
-// will speed up the search by a good margin in theory
-
 use chess::{Board, ChessMove, Square,Color};
-use rand::{thread_rng, Rng};//replace thread rng
+use rand::{rng, Rng};//replace thread rng
 
 const NUM_SQUARES:usize = 64;
 const PIECE_NO:usize = 12;//12 pieces
@@ -18,16 +15,15 @@ pub struct ZobristHashing{
 impl ZobristHashing { //generates a random hash number every time its called and this is used as a
     // key to compute the respective hash value. Use of 64 bits means collisions are 1 in a 100 million or so
     pub fn new_table()-> Self{
-        let mut rng = thread_rng();
+        let mut rng = rng();
         Self{
-            piece_square:[[0;NUM_SQUARES];PIECE_NO].map(|row| row.map(|_| rng.gen())),
-            castling_rights: [0; CASTLING_RIGHTS].map(|_| rng.gen()),
-            en_passant_files: [0; EN_PASSANT].map(|_| rng.gen()),
-            side_to_move: rng.gen()
+            piece_square:[[0;NUM_SQUARES];PIECE_NO].map(|row| row.map(|_| rng.random())),
+            castling_rights: [0; CASTLING_RIGHTS].map(|_| rng.random()),
+            en_passant_files: [0; EN_PASSANT].map(|_| rng.random()),
+            side_to_move: rng.random()
         }
     }
 }
-//A special mention to my girlfriend... who has supported me in making this bot, has put up with my obsession in creating Ruka and has been my pillar in its creation.
 pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     let mut hash:u64 = 0;
 
@@ -48,6 +44,7 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     //         hash ^= zobrist_key.castling_rights[i];
     //     }
     // }
+
     //add logic for en passant
     if board.side_to_move() == Color::Black{
         hash ^= zobrist_key.side_to_move
