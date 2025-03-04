@@ -8,12 +8,12 @@ pub fn evaluation_func(board: &Board) -> i32{
     const GAME_PHASE_INC:[i32;12] = [0,0,1,1,1,1,2,2,4,4,0,0];//adjust weights to be powers of 2, so bitwise division can be done.
 
     const TABLE_INDEX:[[usize;2];6] = [
-        [0, 1],//[0, 1]
-        [2, 3],//[2, 3]
-        [4, 5],//[4, 5]
-        [6, 7],//[6, 7]
-        [8, 9],//[8, 9]
-        [10, 11],//[10, 11]
+        [0, 1],
+        [2, 3],
+        [4, 5],
+        [6, 7],
+        [8, 9],
+        [10, 11],
     ];
 
     let mut mg:[i32;2] = [0,0];//0 for white, 1 for black, this is the middle game table
@@ -81,3 +81,5 @@ fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
 
     resultant_eval
 }
+//https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md
+//github link explaining NNUE

@@ -152,3 +152,5 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
         }
     }
 }
+
+// https://chess.stackexchange.com/questions/42612/chess-programming-have-to-clear-my-transposition-table-after-every-move#comment70276_42612

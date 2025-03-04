@@ -1,11 +1,26 @@
 use chess::{Board, ChessMove, Square,Color};
+use chess::Piece::Pawn;
 use rand::{rng, Rng};//replace thread rng
-
+use dashmap::DashMap;
+use once_cell::sync::Lazy;
 const NUM_SQUARES:usize = 64;
 const PIECE_NO:usize = 12;//12 pieces
 const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
 const EN_PASSANT:usize = 8;// 8 files for castling
 
+#[derive(Copy, Clone)]
+enum NodeType{
+    Exact,
+    LowerBound,
+    UpperBound
+}
+#[derive(Copy, Clone)]
+pub struct TtStructure{
+    score:i32,
+    ply:u8,
+    node_type:NodeType,
+}
+pub static TRANSPOSITION_TABLE: Lazy<DashMap<u64,TtStructure>> = Lazy::new(|| DashMap::new());
 pub struct ZobristHashing{
     pub piece_square: [[u64;NUM_SQUARES];PIECE_NO],
     pub castling_rights: [u64; CASTLING_RIGHTS],
@@ -45,7 +60,6 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     //     }
     // }
 
-    //add logic for en passant
     if board.side_to_move() == Color::Black{
         hash ^= zobrist_key.side_to_move
     }
@@ -61,7 +75,16 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
         let piece_index = piece.to_index();
         new_hash ^= zobrist_key.piece_square[piece_index][index_piece_start];
         new_hash ^= zobrist_key.piece_square[piece_index][index_piece_end];
-    } else {
+
+    }else if board.en_passant().is_some(){
+        //add logic for en passant
+        // let en_passant:bool = if board.en_passant().is_some(){
+        //     let dissimilar_file:bool = (moves.get_source().get_file()) != (moves.get_dest().get_file());
+        //     let target_capture:bool = board.piece_on(moves.get_dest()) == None;
+        //     let piece_start:bool = board.piece_on(moves.get_source()) == Some(Pawn);
+        //     piece_start && dissimilar_file && target_capture
+        // } //change logic to add in file concept. we need moves made.
+    }else {
         panic!("Source square is empty! Invalid move.");
     }
     new_hash ^= zobrist_key.side_to_move;

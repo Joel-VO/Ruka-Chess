@@ -1,14 +1,25 @@
 mod evaluation;
 mod search;
+mod interface;
 
 use std::str::FromStr;
 use chess::{Board, ChessMove, Color, Square};
 use crate::search::alpha_beta::best_move;
 use std::{io, time::{Duration, Instant}};
-use search::search_improvements::zobrist_hash::{ZobristHashing, compute_hash_value, updated_hash_move};
-// use evaluation::evaluations::evaluation_func;
+use search::search_improvements::zobrist_hash::{ZobristHashing,
+                                                compute_hash_value,
+                                                updated_hash_move,
+                                                TtStructure,
+                                                TRANSPOSITION_TABLE};
+use interface::uci;
 
 fn main() {
+    // init of TT
+
+    // let _ = *TRANSPOSITION_TABLE;
+    // let z_hashing_keys = ZobristHashing::new_table();
+
+
     //Default board is the starting position
     // let mut board = Board::default();
     // let stdin = io::stdin();
