@@ -50,7 +50,7 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
         // this is unsafe but only because of values greater than 64, which won't be violated here
         if let Some(piece) = board.piece_on(position){// to check if such a piece exists
             let piece_val:usize = piece.to_index();
-            hash^=zobrist_key.piece_square[piece_val][square];//XOR hash with the randomly generated value
+            hash ^= zobrist_key.piece_square[piece_val][square];//XOR hash with the randomly generated value
         }
     }
     //add logic for castling
@@ -69,24 +69,35 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
 pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&ZobristHashing, board:&Board)->u64{
     //When passing the board, make sure the move is not made in the board!!! otherwise the kernel will panic
     let mut new_hash = current_hash;
-    let index_piece_start = move_made.get_source().to_int() as usize;
-    let index_piece_end = move_made.get_dest().to_int() as usize;
-    if let Some(piece) = board.piece_on(move_made.get_source()) {
-        let piece_index = piece.to_index();
-        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_start];
-        new_hash ^= zobrist_key.piece_square[piece_index][index_piece_end];
 
-    }else if board.en_passant().is_some(){
-        //add logic for en passant
-        // let en_passant:bool = if board.en_passant().is_some(){
-        //     let dissimilar_file:bool = (moves.get_source().get_file()) != (moves.get_dest().get_file());
-        //     let target_capture:bool = board.piece_on(moves.get_dest()) == None;
-        //     let piece_start:bool = board.piece_on(moves.get_source()) == Some(Pawn);
-        //     piece_start && dissimilar_file && target_capture
-        // } //change logic to add in file concept. we need moves made.
+    let piece_start_square = move_made.get_source();
+    let piece_end_square = move_made.get_dest();
+
+    if let Some(piece_moved) = board.piece_on(piece_start_square) {
+        let piece_index = piece_moved.to_index();
+        let from_index = piece_start_square.to_index();
+        let to_index = piece_end_square.to_index();
+
+        new_hash ^= zobrist_key.piece_square[piece_index][from_index];
+        new_hash ^= zobrist_key.piece_square[piece_index][to_index];
     }else {
-        panic!("Source square is empty! Invalid move.");
+        panic!("Source square is empty! Zobrist hash error.");
     }
+    if let Some(captured_piece) = board.piece_on(piece_end_square){
+        let captured_piece_index = captured_piece.to_index();
+        let to_index = piece_end_square.to_index();
+        new_hash ^= zobrist_key.piece_square[captured_piece_index][to_index];
+    }
+
+    //en_passant logic...partially correct, but we have to take into account the piece reaching a
+    // square and also removal of the piece that was captured due to en-passant. Do the logic using
+    // the q search code.
+
+    // if let Some(sq) = board.en_passant(){
+    //     let file = sq.get_file().to_index();
+    //     new_hash ^= zobrist_key.en_passant_files[file];
+    // }
+
     new_hash ^= zobrist_key.side_to_move;
     new_hash
 }
