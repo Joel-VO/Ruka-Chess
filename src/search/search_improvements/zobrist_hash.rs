@@ -77,9 +77,6 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
 
     if let Some(piece_moved) = board.piece_on(piece_start_square) {
         let piece_index = piece_moved.to_index();
-        // let from_index = piece_start_square.to_index();
-        // let to_index = piece_end_square.to_index();
-
         new_hash ^= zobrist_key.piece_square[piece_index][from_index];
         new_hash ^= zobrist_key.piece_square[piece_index][to_index];
     }else {
@@ -87,9 +84,10 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
     }
     if let Some(captured_piece) = board.piece_on(piece_end_square){
         let captured_piece_index = captured_piece.to_index();
-        let to_index = piece_end_square.to_index();
         new_hash ^= zobrist_key.piece_square[captured_piece_index][to_index];
     }
+
+    //check the code logic later.
     let en_passant:bool = if board.en_passant().is_some(){
         let dissimilar_file: bool = (move_made.get_source().get_file()) != (move_made.get_dest().get_file());
         let target_capture: bool = board.piece_on(move_made.get_dest()) == None;
@@ -102,17 +100,14 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
         if let Some(sq) = board.en_passant(){
             let file = sq.get_file().to_index();
             let en_passant_square = sq.to_index();
-            new_hash ^= zobrist_key.en_passant_files[file];
             if let Some(en_passant_piece) = board.piece_on(sq){
                 let piece_index = en_passant_piece.to_index();
                 new_hash ^= zobrist_key.piece_square[piece_index][en_passant_square];
             }
+            new_hash ^= zobrist_key.en_passant_files[file];
         }
     }
-    //en_passant logic...partially correct, but we have to take into account the piece reaching a
-    // square and also removal of the piece that was captured due to en-passant. Do the logic using
-    // the q search code.
-
+    //add in castling rights next. Have to test out the crate to see if its viable.
     new_hash ^= zobrist_key.side_to_move;
     new_hash
 }
