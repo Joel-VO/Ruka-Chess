@@ -3,11 +3,16 @@ use crate::search::move_ordering::moves_sorted;
 use rayon::prelude::*;
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
+use crate::search::search_improvements::zobrist_hash::{compute_hash_value, updated_hash_move, Z_HASHING_KEYS, TRANSPOSITION_TABLE, NodeType, TtStructure};
 
-pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessMove, i32)>{
+pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8) ->Option<(ChessMove, i32)>{
     std::env::set_var("RAYON_NUM_THREADS", "32");
     let alpha = i32::MIN;
     let beta = i32::MAX;
+
+    //main_board init of hash
+    let main_board_hash = compute_hash_value(board,&Z_HASHING_KEYS);
+
 
     //collecting possible root node moves(moves present in current position) and creates individual threads
     let legal_moves = moves_sorted(board);
@@ -16,7 +21,12 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
         .map(//searches using alpha beta and returns the value for each root node move thread
             |&moves|{
                 let current_position = board.make_move_new(moves);
-                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth);//not sure of the true here
+
+                // updation of the hash for each move.
+                let updated_board_hash = updated_hash_move(main_board_hash,&moves,&Z_HASHING_KEYS,board);
+
+
+                let eval = alpha_beta_search(&current_position, alpha, beta, !is_maximising, 1,max_depth,updated_board_hash);//added in updated_board_hash
                 (Some(moves),eval)//if move exists, then returns it
             }
         )
@@ -51,8 +61,26 @@ pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8)->Option<(ChessM
     }
 }
 
-fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bool,
-                     depth:u8, max_depth:u8) ->i32{//add in current_hash:u64
+fn alpha_beta_search(board:&Board,
+                     mut alpha:i32,
+                     mut beta:i32,
+                     is_maximising:bool,
+                     depth:u8,
+                     max_depth:u8,
+                     current_hash:u64) ->i32{//add in current_hash:u64
+
+    // if let Some(entry) = TRANSPOSITION_TABLE.get(&current_hash){
+        // if entry.depth >= depth{
+        //     match entry.node_type {
+        //         NodeType::Exact => return entry.score,
+        //         NodeType::LowerBound => {}//alpha = alpha.max(entry.score),
+        //         NodeType::UpperBound => {} //beta = beta.min(entry.score),
+        //     }
+        //     if alpha >= beta {
+        //         return entry.score;
+        //     }
+        // }
+    // }
 
     //add in condition to check transposition table for hash computed in parent
     if board.status() == BoardStatus::Checkmate{ //checks checkmate condition first, then draw conditions
@@ -66,6 +94,10 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
     }else if depth >= max_depth{
         return q_search(board, alpha, beta, depth, max_depth+4, is_maximising)//made max_depth even due to odd even rule
     }else{
+        //to test for node type in TT table entry.
+        let original_alpha = alpha;
+        let original_beta = beta;
+        let mut eval:i32;
         if is_maximising{
             let mut max_eval = i32::MIN;
             let mut first_move:bool = true;
@@ -78,21 +110,24 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut move_number = 0;
 
             for mv in legal_moves{
+
+                let updated_board_hash = updated_hash_move(current_hash,&mv,&Z_HASHING_KEYS,board);
+
                 move_number += 1;
                 let current_position:Board = board.make_move_new(mv);
                 let eval = if first_move{
                     first_move=false;
-                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//PV node so full search with no LMR
+                    alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth,updated_board_hash)//PV node so full search with no LMR
                 }else{
                     let pvs_eval = if move_number<4 {
-                        alpha_beta_search(&current_position, alpha, alpha + 1, false, depth+1, max_depth)
+                        alpha_beta_search(&current_position, alpha, alpha + 1, false, depth+1, max_depth, updated_board_hash)
                     }else{
-                        alpha_beta_search(&current_position, alpha, alpha + 1, false, lmr_depth + 1, max_depth)
+                        alpha_beta_search(&current_position, alpha, alpha + 1, false, lmr_depth + 1, max_depth,updated_board_hash)
                     };//PVS with LMR
                     if pvs_eval >= beta{
                         pvs_eval
                     }else if pvs_eval > alpha{
-                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth)//full search, no LMR
+                        alpha_beta_search(&current_position, alpha, beta, false, depth+1, max_depth,updated_board_hash)//full search, no LMR
                     }else{
                         pvs_eval
                     }
@@ -105,8 +140,7 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                     break;
                 }
             }
-            max_eval
-
+            eval = max_eval
 
         }else{
             let mut min_eval= i32::MAX;
@@ -121,21 +155,24 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
             let mut move_number = 0;
 
             for mv in legal_moves{
+
+                let updated_board_hash = updated_hash_move(current_hash,&mv,&Z_HASHING_KEYS,board);
+
                 move_number += 1;
                 let current_position:Board = board.make_move_new(mv);
                 let eval = if first_move{
                     first_move=false;
-                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)//PVS with no LMR
+                    alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth,updated_board_hash)//PVS with no LMR
                 }else{
                     let pvs_eval = if move_number<4{
-                        alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth)
+                        alpha_beta_search(&current_position, beta-1, beta, true, depth+1, max_depth,updated_board_hash)
                     }else{
-                        alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth)
+                        alpha_beta_search(&current_position, beta-1, beta, true, lmr_depth+1, max_depth,updated_board_hash)
                     };//PVS with LMR
                     if pvs_eval <= alpha{
                         pvs_eval
                     }else if pvs_eval < beta{
-                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth)//full search with LMR removed
+                        alpha_beta_search(&current_position, alpha, beta, true, depth+1, max_depth, updated_board_hash)//full search with LMR removed
                     }else{
                         pvs_eval
                     }
@@ -148,8 +185,21 @@ fn alpha_beta_search(board:&Board, mut alpha:i32, mut beta:i32, is_maximising:bo
                     break;
                 }
             }
-            min_eval
+            eval = min_eval //added in eval
         }
+        let flag = if eval <= original_alpha {
+            NodeType::UpperBound
+        } else if eval >= original_beta {
+            NodeType::LowerBound
+        } else {
+            NodeType::Exact
+        };
+        TRANSPOSITION_TABLE.insert(current_hash,TtStructure{
+           score:eval,
+            depth,
+            node_type:flag
+        });
+        eval
     }
 }
 

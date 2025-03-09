@@ -9,19 +9,20 @@ const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
 const EN_PASSANT:usize = 8;// 8 files for castling
 
 #[derive(Copy, Clone)]
-enum NodeType{
+pub enum NodeType{
     Exact,
     LowerBound,
     UpperBound
 }
 #[derive(Copy, Clone)]
 pub struct TtStructure{
-    score:i32,
-    ply:u8,
-    node_type:NodeType,
+    pub score:i32,
+    pub depth:u8,
+    pub node_type:NodeType,
 }
 pub static TRANSPOSITION_TABLE: Lazy<DashMap<u64,TtStructure>> = Lazy::new(|| DashMap::new());
-pub struct ZobristHashing{
+pub static Z_HASHING_KEYS:Lazy<ZobristHashing> = Lazy::new(|| ZobristHashing::new_table());
+    pub struct ZobristHashing{
     pub piece_square: [[u64;NUM_SQUARES];PIECE_NO],
     pub castling_rights: [u64; CASTLING_RIGHTS],
     pub en_passant_files: [u64; EN_PASSANT],
@@ -43,7 +44,6 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
     let mut hash:u64 = 0;
 
     // add logic for each piece
-
     for square in 0..NUM_SQUARES{
         let position:Square = unsafe {Square::new(square as u8)};
         //could have used file and rank function, but might have been slower due to extra computation

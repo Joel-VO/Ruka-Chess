@@ -40,6 +40,8 @@
 //             if tokens.len() < 2 {
 //                 continue;
 //             }
+                //try making the board not have to parse through all the moves each time. it introduces delay + is inefficient. make it so board::default()
+                //is used only initially, then on it incrementally updates.
 //             if tokens[1] == "startpos" {
 //                 board = Board::default();
 //                 // Check for subsequent moves
@@ -90,22 +92,45 @@
 //         // Go command: start the search
 //         else if input.starts_with("go") {
 //             // Default move time is 1 second.
-//             let movetime = Duration::new(2, 0); //changed from mut to immutable. change back after work is done.
-//             // let tokens: Vec<&str> = input.split_whitespace().collect();
-//             // // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
-//             // if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
-//             //     if index + 1 < tokens.len() {
-//             //         if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-//             //             movetime = Duration::from_millis(ms);
-//             //         }
-//             //     }
-//             // }
 //
+//             let mut move_time = Duration::new(2, 0); //changed from mut to immutable. change back after work is done.
+//             let mut w_time = Duration::new(0, 0);
+//             let mut b_time= Duration::new(0, 0);
+//
+//             let tokens: Vec<&str> = input.split_whitespace().collect();
+//             // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
+//
+//             // movetime.
+//             if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
+//                 if index + 1 < tokens.len() {
+//                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+//                         move_time = Duration::from_millis(ms);
+//                     }
+//                 }
+//             }
+//             //w_time initialised
+//             if let Some(index) = tokens.iter().position(|&s| s == "w_time") {
+//                 if index + 1 < tokens.len() {
+//                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+//                        w_time = Duration::from_millis(ms);
+//                     }
+//                 }
+//             }
+//             //b_time intialised.
+//             if let Some(index) = tokens.iter().position(|&s| s == "b_time") {
+//                 if index + 1 < tokens.len() {
+//                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+//                        b_time = Duration::from_millis(ms);
+//                     }
+//                 }
+//             }
 //             // Determine whose turn it is (assume white is maximising)
 //             let is_maximising = match board.side_to_move() {
 //                 Color::White => true,
 //                 Color::Black => false,
 //             };
+//
+//             // add in logic to compute dynamically time allocated based on w_time and b_time
 //
 //             // Iterative deepening search
 //             let now = Instant::now();
@@ -113,7 +138,7 @@
 //             let mut _eval = 0;
 //             // You can adjust the depth range as needed.
 //             for depth in (6..100).step_by(2) {
-//                 if now.elapsed() > movetime {
+//                 if now.elapsed() > move_time {
 //                     // Optionally, print depth info for debugging:
 //                     // eprintln!("Reached depth {depth} after {:?}",now.elapsed());
 //                     break;
