@@ -90,8 +90,9 @@ fn alpha_beta_search(board: &Board,
         if entry.depth >= max_depth-depth {
             match entry.node_type {
                 NodeType::Exact => {return entry.score},
-                NodeType::UpperBound=> {return entry.score},
-                NodeType::LowerBound => {return entry.score}
+                // NodeType::LowerBound => {if entry.score >= beta {return entry.score} }
+                // NodeType::UpperBound => {if entry.score <= alpha {return entry.score} }
+                _ => {}
             }
         }
     }
