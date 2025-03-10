@@ -43,7 +43,7 @@ fn main() {
             let (mut best_mov, mut eval): (ChessMove, i32) = (ChessMove::default(), 0);
 
             let now = Instant::now(); //starts the time.
-            for depth_iterate in (6..30).step_by(2) { //the timing logic can be fine-tuned a lot based on available time, position etc.
+            for depth_iterate in (6..251).step_by(2) { //the timing logic can be fine-tuned a lot based on available time, position etc.
                 println!("{depth_iterate}");
                 let elapsed = now.elapsed(); //checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
