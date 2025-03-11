@@ -4,7 +4,7 @@ mod interface;
 use crate::search::alpha_beta::best_move;
 use std::str::FromStr;
 use chess::{Board, ChessMove, Color, Square};
-use std::{io, time::{Duration, Instant}};
+use std::{env, io, time::{Duration, Instant}};
 use search::search_improvements::zobrist_hash::{ZobristHashing,
                                                 compute_hash_value,
                                                 updated_hash_move,
@@ -14,6 +14,7 @@ use search::search_improvements::zobrist_hash::{ZobristHashing,
 // use interface::uci::uci;
 
 fn main() {
+    env::set_var("RAYON_NUM_THREADS", "32");
     let _ = *TRANSPOSITION_TABLE; //init of Transposition table
     let _ = *Z_HASHING_KEYS; // init of hashing keys
     // uci();
@@ -21,7 +22,7 @@ fn main() {
     //copy from default board comment to here in-case of switching over to regular case.
 
     println!("Enter fen string ");
-    let max_time = Duration::new(1, 0); //seconds and nanoseconds adjustments
+    let max_time = Duration::new(5, 0); //seconds and nanoseconds adjustments
     let mut fen: String = String::new();
     io::stdin().read_line(&mut fen).expect("Data not a string");
     //  4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24
@@ -43,7 +44,7 @@ fn main() {
             let (mut best_mov, mut eval): (ChessMove, i32) = (ChessMove::default(), 0);
 
             let now = Instant::now(); //starts the time.
-            for depth_iterate in (6..251).step_by(2) { //the timing logic can be fine-tuned a lot based on available time, position etc.
+            for depth_iterate in (6..100).step_by(2) { //the timing logic can be fine-tuned a lot based on available time, position etc.
                 println!("{depth_iterate}");
                 let elapsed = now.elapsed(); //checks if time constraint is passed.
                 //the timing logic has to be changed to make sure live timing is possible so it takes only the specified amount of time.
@@ -92,9 +93,6 @@ fn main() {
         //delete from this
     }
 }
-
-
-
 
 //could add testing https://github.com/lithander/Leorik/blob/master/Leorik.Test/see.epd
 

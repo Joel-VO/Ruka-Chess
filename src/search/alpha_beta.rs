@@ -72,27 +72,24 @@ fn alpha_beta_search(board: &Board,
     // Terminal position checks
     if board.status() == BoardStatus::Checkmate {
         if board.side_to_move() == Color::White {
-            -400000 + (depth as i32);
+            -500000 + (depth as i32);
         } else {
-            400000 - (depth as i32);
+            500000 - (depth as i32);
         }
     } else if board.status() == BoardStatus::Stalemate {
         return 0;
     }
 
-    // Depth check
     if depth >= max_depth {
         return q_search(board, alpha, beta, depth, max_depth+4, is_maximising);
     }
 
-    // SIMPLIFIED TT LOOKUP - only use exact scores
     if let Some(entry) = TRANSPOSITION_TABLE.get(&current_hash) {
         if entry.depth >= max_depth-depth {
             match entry.node_type {
                 NodeType::Exact => {return entry.score},
-                // NodeType::LowerBound => {if entry.score >= beta {return entry.score} }
-                // NodeType::UpperBound => {if entry.score <= alpha {return entry.score} }
-                _ => {}
+                NodeType::LowerBound => {if entry.score >= beta {return entry.score} }
+                NodeType::UpperBound => {if entry.score <= alpha {return entry.score} }
             }
         }
     }
@@ -176,27 +173,20 @@ fn alpha_beta_search(board: &Board,
         eval = min_eval;
     }
 
-    // SIMPLIFIED TT STORAGE - only store exact nodes
     let flag = if is_maximising{
         if eval <= original_alpha{
-            // println!("inserted upper bound");
             NodeType::UpperBound
         }else if eval >= beta{
-            // println!("inserted lower bound");
             NodeType::LowerBound
         }else{
-            // println!("inserted exact");
             NodeType::Exact
         }
     }else{
         if eval >= original_beta{
-            // println!("inserted upper bound");
             NodeType::UpperBound
         }else if eval <= alpha{
-            // println!("inserted lower bound");
             NodeType::LowerBound
         }else{
-            // println!("inserted exact");
             NodeType::Exact
         }
     };
@@ -208,3 +198,4 @@ fn alpha_beta_search(board: &Board,
     eval
 }
 // https://chess.stackexchange.com/questions/42612/chess-programming-have-to-clear-my-transposition-table-after-every-move#comment70276_42612
+
