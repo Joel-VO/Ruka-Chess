@@ -2,10 +2,14 @@ use std::str::FromStr;
 use chess::{Board, ChessMove, Color};
 use crate::search::alpha_beta::best_move;
 use std::{io, time::{Duration, Instant}};
+use crate::search::search_improvements::zobrist_hash::{TRANSPOSITION_TABLE, Z_HASHING_KEYS};
+
 pub fn uci() {
     // Default board is the starting position
     let mut board = Board::default();
     let stdin = io::stdin();
+    let _ = *TRANSPOSITION_TABLE; //init of Transposition table
+    let _ = *Z_HASHING_KEYS; // init of hashing keys
 
     // UCI main loop
     loop {
@@ -20,6 +24,7 @@ pub fn uci() {
 
         // Quit command
         if input == "quit" {
+            TRANSPOSITION_TABLE.clear();
             break;
         }
         // UCI initialization

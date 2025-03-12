@@ -5,7 +5,7 @@ use dashmap::DashMap;
 use once_cell::sync::Lazy;
 const NUM_SQUARES:usize = 64;
 const PIECE_NO:usize = 12;//12 pieces
-const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
+// const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
 const EN_PASSANT:usize = 8;// 8 files for castling
 
 #[derive(Copy, Clone)]
@@ -24,7 +24,7 @@ pub static TRANSPOSITION_TABLE: Lazy<DashMap<u64,TtStructure>> = Lazy::new(|| Da
 pub static Z_HASHING_KEYS:Lazy<ZobristHashing> = Lazy::new(|| ZobristHashing::new_table());
 pub struct ZobristHashing{
     pub piece_square: [[u64;NUM_SQUARES];PIECE_NO],
-    pub castling_rights: [u64; CASTLING_RIGHTS],
+    // pub castling_rights: [u64; CASTLING_RIGHTS],
     pub en_passant_files: [u64; EN_PASSANT],
     pub side_to_move:u64
 }
@@ -34,7 +34,7 @@ impl ZobristHashing { //generates a random hash number every time its called and
         let mut rng = rng();
         Self{
             piece_square:[[0;NUM_SQUARES];PIECE_NO].map(|row| row.map(|_| rng.random())),
-            castling_rights: [0; CASTLING_RIGHTS].map(|_| rng.random()),
+            // castling_rights: [0; CASTLING_RIGHTS].map(|_| rng.random()),
             en_passant_files: [0; EN_PASSANT].map(|_| rng.random()),
             side_to_move: rng.random()
         }
