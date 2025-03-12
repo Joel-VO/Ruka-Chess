@@ -7,7 +7,7 @@ use chess::{Board, ChessMove};
 use std::{io, time::{Duration, Instant}};
 use search::search_improvements::zobrist_hash::{TRANSPOSITION_TABLE,
                                                 Z_HASHING_KEYS};
-// use interface::uci::uci;
+use interface::uci::uci;
 
 fn main() {
 

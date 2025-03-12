@@ -92,7 +92,7 @@ fn alpha_beta_search(board: &Board,
     }else{
         let original_alpha = alpha;
         let original_beta = beta;
-        let mut eval: i32;
+        let eval: i32;
 
         if is_maximising{
             let mut max_eval = i32::MIN;
