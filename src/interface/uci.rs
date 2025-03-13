@@ -33,9 +33,9 @@ pub fn uci() {
             println!("id author Joel-VO");
             // Additional options can be listed here if needed
             println!("uciok");
-        }
-        // Ready check
-        else if input == "isready" {
+        }else if  input == "ucinewgame"{
+            TRANSPOSITION_TABLE.clear();
+        }else if input == "isready" {// Ready check
             println!("readyok");
         }
         // Position command
@@ -95,30 +95,57 @@ pub fn uci() {
         // Go command: start the search
         else if input.starts_with("go") {
             // Default move time is 1 second.
-            let movetime = Duration::new(2, 0); //changed from mut to immutable. change back after work is done.
-            // let tokens: Vec<&str> = input.split_whitespace().collect();
-            // // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
-            // if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
-            //     if index + 1 < tokens.len() {
-            //         if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-            //             movetime = Duration::from_millis(ms);
-            //         }
-            //     }
-            // }
+            let mut movetime: Option<Duration> = None;
+            let mut wtime: Option<Duration> = None;
+            let mut btime: Option<Duration> = None;
+
+            let tokens: Vec<&str> = input.split_whitespace().collect();
+            // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
+            if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
+                if index + 1 < tokens.len() {
+                    if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+                        movetime = Option::from(Duration::from_millis(ms));
+                    }
+                }
+            }
+            if let Some(index) = tokens.iter().position(|&s| s == "wtime") {
+                if index + 1 < tokens.len() {
+                    if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+                        wtime = Option::from(Duration::from_millis(ms));
+                    }
+                }
+            }
+            if let Some(index) = tokens.iter().position(|&s| s == "btime") {
+                if index + 1 < tokens.len() {
+                    if let Ok(ms) = tokens[index + 1].parse::<u64>() {
+                        btime =Option::from(Duration::from_millis(ms));
+                    }
+                }
+            }
 
             // Determine whose turn it is (assume white is maximising)
             let is_maximising = match board.side_to_move() {
                 Color::White => true,
                 Color::Black => false,
             };
+            let time_limit = if let Some(mt) = movetime {
+                mt
+            } else if is_maximising {
+                // Use white's remaining time, or a default if not provided.
+                wtime.unwrap_or(Duration::from_secs(2)) / 30
+            } else {
+                // Use black's remaining time, or a default if not provided.
+                btime.unwrap_or(Duration::from_secs(2)) / 30
+            };
 
             // Iterative deepening search
             let now = Instant::now();
             let mut best_mov = ChessMove::default();
             let mut _eval = 0;
+
             // You can adjust the depth range as needed.
-            for depth in (6..100).step_by(2) {
-                if now.elapsed() > movetime {
+            for depth in (2..100).step_by(2) {
+                if now.elapsed() > time_limit{
                     // Optionally, print depth info for debugging:
                     // eprintln!("Reached depth {depth} after {:?}",now.elapsed());
                     break;

@@ -1,4 +1,4 @@
-use chess::{Board, ALL_SQUARES, Color, File, Square, Rank, Piece};
+use chess::{Board, ALL_SQUARES};// Color, File, Square, Rank, Piece
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
 
@@ -37,49 +37,49 @@ pub fn evaluation_func(board: &Board) -> i32{
     let mg_phase = game_phase.min(24);
     let eg_phase = 24-mg_phase;
     let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
-    let complete_eval = additional_eval_capability(board,eval, mg_phase);
-    complete_eval
-    //
+    // let complete_eval = additional_eval_capability(board,eval, mg_phase);
+    // complete_eval
+    eval
 }
 
-fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
-    //king-side safety
-    let mut resultant_eval:i32 = eval;
-    let color:Color = board.side_to_move();
-    let king_square = board.king_square(color);
-    let king_file = king_square.get_file();
-    let castled = if king_file == File::C || king_file == File::G{
-        let rank_val =  if color == Color::White{Rank::First} else {Rank::Eighth};
-
-        let rook_king = Square::make_square(rank_val, File::F);
-        let rook_queen = Square::make_square(rank_val, File::D);
-
-        if let Some(rook) = board.piece_on(rook_king){
-            if rook == Piece::Rook{
-                true
-            }else{
-                false
-            }
-        }else if let Some(rook) = board.piece_on(rook_queen){
-            if rook == Piece::Rook{
-                true
-            }else{
-                false
-            }
-        }else{
-            false
-        }
-    }else{
-        false
-    };
-    if castled && game_phase > 12{
-        resultant_eval += 50;
-    }
-
-    //add in doubled pawn logic later and other positional concepts
-
-
-    resultant_eval
-}
+// fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
+//     //king-side safety
+//     let mut resultant_eval:i32 = eval;
+//     let color:Color = board.side_to_move();
+//     let king_square = board.king_square(color);
+//     let king_file = king_square.get_file();
+//     let castled = if king_file == File::C || king_file == File::G{
+//         let rank_val =  if color == Color::White{Rank::First} else {Rank::Eighth};
+//
+//         let rook_king = Square::make_square(rank_val, File::F);
+//         let rook_queen = Square::make_square(rank_val, File::D);
+//
+//         if let Some(rook) = board.piece_on(rook_king){
+//             if rook == Piece::Rook{
+//                 true
+//             }else{
+//                 false
+//             }
+//         }else if let Some(rook) = board.piece_on(rook_queen){
+//             if rook == Piece::Rook{
+//                 true
+//             }else{
+//                 false
+//             }
+//         }else{
+//             false
+//         }
+//     }else{
+//         false
+//     };
+//     if castled && game_phase > 12{
+//         resultant_eval += 50;
+//     }
+//
+//     //add in doubled pawn logic later and other positional concepts
+//
+//
+//     resultant_eval
+// }
 //https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md
 //github link explaining NNUE

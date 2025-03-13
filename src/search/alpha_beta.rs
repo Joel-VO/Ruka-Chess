@@ -88,7 +88,7 @@ fn alpha_beta_search(board: &Board,
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+4, is_maximising)//made max_depth even due to odd even rule
+        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth even due to odd even rule
     }else{
         let original_alpha = alpha;
         let original_beta = beta;
