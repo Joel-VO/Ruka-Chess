@@ -1,10 +1,12 @@
+//documentation has to be done...the code is getting fairly large...very important after Null move pruning...
+
 use chess::{Board, BoardStatus, ChessMove, Color};
 use crate::search::move_ordering::moves_sorted;
 use rayon::prelude::*;
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
 use crate::search::search_improvements::zobrist_hash::{compute_hash_value, updated_hash_move, Z_HASHING_KEYS, TRANSPOSITION_TABLE, NodeType, TtStructure};
-
+const R:u8 = 2; //reduction value for null-move pruning
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8) ->Option<(ChessMove, i32)>{
 
     let alpha = i32::MIN;
@@ -88,8 +90,24 @@ fn alpha_beta_search(board: &Board,
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth even due to odd even rule
+        return q_search(board, alpha, beta, depth, max_depth+2, !is_maximising)//made max_depth even due to odd even rule
     }else{
+        // if depth > 7 && !(board.checkers().popcnt()>0){//null move pruning
+        //     let null_move_board = board.null_move().expect("Not a valid position condition");
+        //     //add in renewed hash value. create a new hash function that removes previous en_passant rule if possible and switches sides.
+        //
+        //     if is_maximising{
+        //         let score = alpha_beta_search(&null_move_board, beta-1, beta, false, depth+R, max_depth, updated_board_hash);
+        //         if score >= beta{
+        //             return score;
+        //         }
+        //     }else{
+        //         let score = alpha_beta_search(&null_move_board, alpha, alpha+1, true, depth+R, max_depth, updated_board_hash);
+        //         if score <= alpha{
+        //             return score;
+        //         }
+        //     }
+        // }
         let original_alpha = alpha;
         let original_beta = beta;
         let eval: i32;
