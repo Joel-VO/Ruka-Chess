@@ -107,7 +107,11 @@ pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&Zo
             new_hash ^= zobrist_key.en_passant_files[file];
         }
     }
-    //add in castling rights next. Have to test out the crate to see if its viable.
+    //add in castling rights next. Have to test out the crate to see if it's viable.
     new_hash ^= zobrist_key.side_to_move;
+    new_hash
+}
+pub fn null_move_hash(current_hash: u64, zobrist_key: &ZobristHashing)->u64{
+    let new_hash = current_hash^zobrist_key.side_to_move;
     new_hash
 }

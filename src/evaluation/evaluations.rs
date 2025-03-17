@@ -82,4 +82,4 @@ pub fn evaluation_func(board: &Board) -> i32{
 //     resultant_eval
 // }
 //https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md
-//github link explaining NNUE
+//GitHub link explaining NNUE

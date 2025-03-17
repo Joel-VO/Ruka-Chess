@@ -5,9 +5,9 @@ use crate::search::alpha_beta::best_move;
 use std::str::FromStr;
 use chess::{Board, ChessMove};
 use std::{io, time::{Duration, Instant}};
-use search::search_improvements::zobrist_hash::{TRANSPOSITION_TABLE,
-                                                Z_HASHING_KEYS};
-use interface::uci::uci;
+// use search::search_improvements::zobrist_hash::{TRANSPOSITION_TABLE,
+//                                                 Z_HASHING_KEYS};
+// use interface::uci::uci;
 use std::env;
 fn main() {
     env::set_var("RAYON_NUM_THREADS", "32");
@@ -16,7 +16,7 @@ fn main() {
     //copy from default board comment to here in-case of switching over to regular case.
 
     println!("Enter fen string ");
-    let max_time = Duration::new(1,0);//seconds and nanoseconds adjustments
+    let max_time = Duration::new(5,0);//seconds and nanoseconds adjustments
     let mut fen:String = String::new();
     io::stdin().read_line(&mut fen).expect("Data not a string");
     //  4rb1k/2pqn2p/6pn/ppp3N1/P1QP2b1/1P2p3/2B3PP/B3RRK1 w - - 0 24
