@@ -26,7 +26,6 @@ fn main() {
     // 8/8/8/8/8/8/P1k5/K7 w - - 0 1
     let board_fen:Vec<&str> = fen.split_whitespace().collect();
     let piece_to_move = board_fen[1];//takes just the current player
-
     match Board::from_str(fen.as_str()){
         Ok(board) => {//checks condition to see if board is legal
             //checks whose turn it is currently and feeds to alpha beta

@@ -1,32 +1,34 @@
-# Ruka Chess #
-## About ##
-Ruka is a high-performance chess engine written in Rust, designed to combine efficiency with competitive gameplay. It leverages advanced algorithms like alpha-beta pruning and employs bitboard representation for compact and efficient handling of chess positions.
-Ruka interfaces seamlessly with the Universal Chess Interface (UCI) protocol, making it compatible with popular chess platforms like lichess.org.
-A passion project of ours, Ruka is a chess engine that we hope can perform at a high level.
-## Installation ##
-First, clone the repository locally using:
+# Ruka Chess
+
+## About
+
+Ruka Chess is a high-performance chess engine written in Rust. It is designed to combine efficiency with competitive gameplay through advanced algorithms such as alpha-beta pruning and bitboard representations for compact and efficient position handling. Ruka is fully compatible with the Universal Chess Interface (UCI) protocol, allowing seamless integration with popular chess platforms like lichess.org.
+
+This passion project aims to deliver a robust chess engine capable of high-level performance.
+
+## Installation
+
+Clone the repository locally:
 
 ```shell
 git clone https://github.com/Joel-VO/Ruka-Chess.git
 cd ruka
 ```
-This works for both Windows(after installing git) / Linux
+### For Linux 
 
-### For Linux ###
-
-To run it directly, run:
+To run the engine directly:
 ```shell
 cargo run --release
 ```
-Or for compiling and then running:
+Alternatively, compile and then run by:
 
-Build the project:
+* Build the project:
 
 ```shell
 cargo build --release
 ```
 
-Run the engine:
+* Run the engine:
 ```shell
 ./target/release/ruka
 ```
@@ -36,14 +38,14 @@ To run it directly, run:
 ```shell
 cargo run --release
 ```
-Or for compiling and then running:
+Alternatively, compile and then run:
 
-Build the project:
+* Build the project:
 ```shell
 cargo build --release
 ```
 
-Run the engine:
+* Run the engine:
 ```shell
 ruka.exe
 ```
@@ -65,8 +67,19 @@ After compiling, run commands in the uci format to get outputs. If you have a lo
 
 #### Example UCI Command: ####
 uci (server) -> id name Ruka-Chess (engine) -> id author JoelVO (engine) -> uciok (engine)-> isready (server)-> readyok (engine)-> 
+```scss
+uci                 (server)
+id name Ruka-Chess  (engine)
+id author JoelVO    (engine)
+uciok               (engine)
+isready             (server)
+readyok             (engine)
+ucinewgame          (server)
+position startpos   (server)
+go maketime 1000    (server)
+bestmove e2e4       (engine)
+```
 
-ucinewgame (server) -> position startpos (server) -> go maketime 1000 (server) -> bestmove e2e4 (engine)
 #### To play against Ruka:
-Go to [lichess.org](#https://lichess.org/@/Ruka-Chess) and challenge her to a game. Check if she's online before issuing her a challenge. 
+Go to [lichess.org](#https://lichess.org/@/Ruka-Chess) and challenge her to a game.Ensure the engine is online before issuing a challenge.
 
