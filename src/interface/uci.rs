@@ -100,42 +100,49 @@ pub fn uci() {
             let mut btime: Option<Duration> = None;
 
             let tokens: Vec<&str> = input.split_whitespace().collect();
-            // If a "movetime" parameter is provided, use it (expecting time in milliseconds)
+            // Parse time parameters
             if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
                 if index + 1 < tokens.len() {
                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-                        movetime = Option::from(Duration::from_millis(ms));
+                        movetime = Some(Duration::from_millis(ms));
                     }
                 }
             }
             if let Some(index) = tokens.iter().position(|&s| s == "wtime") {
                 if index + 1 < tokens.len() {
                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-                        wtime = Option::from(Duration::from_millis(ms));
+                        wtime = Some(Duration::from_millis(ms));
                     }
                 }
             }
             if let Some(index) = tokens.iter().position(|&s| s == "btime") {
                 if index + 1 < tokens.len() {
                     if let Ok(ms) = tokens[index + 1].parse::<u64>() {
-                        btime =Option::from(Duration::from_millis(ms));
+                        btime = Some(Duration::from_millis(ms));
                     }
                 }
             }
 
-            // Determine whose turn it is (assume white is maximising)
-            let is_maximising = match board.side_to_move() {
-                Color::White => true,
-                Color::Black => false,
-            };
+            // Determine whose turn it is
+            let is_maximising = matches!(board.side_to_move(), Color::White);
+
+            // Calculate time limit based on current player's remaining time
             let time_limit = if let Some(mt) = movetime {
                 mt
-            } else if is_maximising {
-                // Use white's remaining time, or a default if not provided.
-                wtime.unwrap_or(Duration::from_secs(2)) / 30
             } else {
-                // Use black's remaining time, or a default if not provided.
-                btime.unwrap_or(Duration::from_secs(2)) / 30
+                let player_time = if is_maximising { wtime } else { btime };
+                player_time.map_or(Duration::from_secs(2) / 30, |pt| {
+                    if pt >= Duration::from_secs(600) {  // 10 minutes
+                        Duration::from_secs(5)
+                    } else if pt <= Duration::from_secs(60) {  // 1 minute
+                        Duration::from_secs(1)
+                    } else if pt <= Duration::from_secs(300) {  // 5 minutes
+                        Duration::from_secs(2)
+                    } else {
+                        // For times between 5-10 minutes, use original division by 30 logic
+                        pt / 30
+                    }
+                })
             };
 
             // Iterative deepening search
@@ -143,11 +150,8 @@ pub fn uci() {
             let mut best_mov = ChessMove::default();
             let mut _eval = 0;
 
-            // You can adjust the depth range as needed.
             for depth in (2..100).step_by(2) {
-                if now.elapsed() > time_limit{
-                    // Optionally, print depth info for debugging:
-                    // eprintln!("Reached depth {depth} after {:?}",now.elapsed());
+                if now.elapsed() > time_limit {
                     break;
                 }
                 if let Some((mv, evaluation)) = best_move(&board, is_maximising, depth) {
@@ -157,7 +161,7 @@ pub fn uci() {
                     break;
                 }
             }
-            // Output the best move in UCI format.
+
             println!("bestmove {}", best_mov);
         }
     }
