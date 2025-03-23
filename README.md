@@ -81,5 +81,5 @@ bestmove e2e4       (engine)
 ```
 
 #### To play against Ruka:
-Go to [lichess.org](#https://lichess.org/@/Ruka-Chess) and challenge her to a game.Ensure the engine is online before issuing a challenge.
+Go to [lichess.org](https://lichess.org/@/Ruka-Chess) and challenge her to a game.Ensure the engine is online before issuing a challenge.
 
