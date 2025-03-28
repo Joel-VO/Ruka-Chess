@@ -1,85 +1,106 @@
-# Ruka Chess
+# Ruka Chess Engine
 
-## About
+## Overview
 
-Ruka Chess is a high-performance chess engine written in Rust. It is designed to combine efficiency with competitive gameplay through advanced algorithms such as alpha-beta pruning and bitboard representations for compact and efficient position handling. Ruka is fully compatible with the Universal Chess Interface (UCI) protocol, allowing seamless integration with popular chess platforms like lichess.org.
+Ruka Chess is a high-performance chess engine developed in Rust, designed to deliver exceptional gameplay through cutting-edge algorithmic techniques. Combining efficiency, speed, and strategic depth, Ruka represents a sophisticated approach to computational chess.
 
-This passion project aims to deliver a robust chess engine capable of high-level performance.
+## Key Features
+
+- **Advanced Search Algorithms**
+  - Minimax algorithm with Principal Variation Search (PVS)
+  - Alpha-beta pruning
+  - Null move pruning
+  - Late Move Reduction (LMR)
+
+- **Efficient Data Structures**
+  - Bitboard representations for compact position handling
+  - Transposition Tables using Zobrist hashing
+  - Optimized move generation and ordering
+
+- **Robust Evaluation**
+  - Pesto evaluation method
+  - Comprehensive piece-square tables
+  - Tactical position analysis
+
+- **Universal Chess Interface (UCI) Compatibility**
+  - Seamless integration with major chess platforms
+  - Support for standard UCI communication protocols
 
 ## Installation
 
-Clone the repository locally:
+### Prerequisites
+- Rust programming language (latest stable version)
+- Cargo package manager
+- A UCI compatible game manager like [CutechessCLI](https://github.com/cutechess/cutechess) or a similar game manager. 
+
+### Cloning the Repository
 
 ```shell
 git clone https://github.com/Joel-VO/Ruka-Chess.git
 cd ruka
 ```
-### For Linux 
 
-To run the engine directly:
+### Running the Engine
+
+#### Linux
 ```shell
+# Run directly
 cargo run --release
-```
-Alternatively, compile and then run by:
 
-* Build the project:
-
-```shell
+# Alternative method
 cargo build --release
-```
-
-* Run the engine:
-```shell
 ./target/release/ruka
 ```
-### For Windows ###
+- Next, link the bin file to [CutechessCLI](https://github.com/cutechess/cutechess) or follow the direction provided by [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot?tab=readme-ov-file) to link the engine to lichess.
 
-To run it directly, run:
+#### Windows
 ```shell
+# Run directly
 cargo run --release
-```
-Alternatively, compile and then run:
 
-* Build the project:
-```shell
+# Alternative method
 cargo build --release
-```
-
-* Run the engine:
-```shell
 ruka.exe
 ```
-## Features ##
-* `Chess Crate`: Efficient data structures and functions for managing chess board and move generation.
-* `UCI compatible`: Supports UCI format and can connect with any UCI compatible framework.
-* `Move ordering`: Uses mover ordering to prioritise checks and captures.
-* `MiniMax`: Uses the age-old minimax algorithm for search tree.
-* `Principal Variation Search`: Uses PVS to reduce search space without sacrificing accuracy.
-* `Reduction algorithms`: Uses LMR to reduce depth to search based on whether the position is tactical or not.
-* `Pruning`: Uses alpha beta pruning and Null move pruning.
-* `Evaluation`: Uses Pesto evaluation with its piece square tables taken from the Chess Programming Wiki. 
-* `Transposition Tables`: Added TT implementation using Zobrist hashing technique to speed up search...
 
-## Usage ##
-#### To use it with a chess GUI:
+## Usage
 
-After compiling, run commands in the uci format to get outputs. If you have a locally running chess GUI, use that, else, use the lichess-bot for configuring Ruka.
+### Chess GUI Integration
 
-#### Example UCI Command: ####
-uci (server) -> id name Ruka-Chess (engine) -> id author JoelVO (engine) -> uciok (engine)-> isready (server)-> readyok (engine)-> 
-```scss
-uci                 (server)
-id name Ruka-Chess  (engine)
-id author JoelVO    (engine)
-uciok               (engine)
-isready             (server)
-readyok             (engine)
-ucinewgame          (server)
-position startpos   (server)
-go maketime 1000    (server)
-bestmove e2e4       (engine)
+Ruka supports standard UCI protocol commands. Here's a typical interaction sequence:
+
+```
+uci                 # Initialize UCI protocol
+-> id name Ruka-Chess
+-> id author JoelVO
+-> uciok
+
+isready             # Check engine readiness
+-> readyok
+
+ucinewgame          # Start a new game
+position startpos   # Set starting position
+go movetime 1000    # Calculate best move with 1-second time limit
+-> bestmove e2e4    # Engine's recommended move
 ```
 
-#### To play against Ruka:
-Go to [lichess.org](https://lichess.org/@/Ruka-Chess) and challenge her to a game.Ensure the engine is online before issuing a challenge.
+### Online Play
 
+Challenge Ruka on [Lichess.org](https://lichess.org/@/Ruka-Chess)
+
+**Note:** Ensure the engine is online before initiating a game.
+
+## Contributing
+
+Contributions are welcome! Please submit pull requests or open issues on the GitHub repository.
+
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+
+## Contact
+
+Project Maintainer: Joel VO
+- GitHub: [Joel-VO](https://github.com/Joel-VO)
