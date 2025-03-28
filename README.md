@@ -4,7 +4,7 @@
 [![Rust](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)](https://www.rust-lang.org/)
 
 
-[![GitHub Release](https://img.shields.io/github/v/release/Joel-VO/Ruka-Chess?color=green&label=Release)](https://github.com/Joel-VO/Ruka-Chess/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/Joel-VO/Ruka-Chess?display_name=tag&color=green&label=Release)](https://github.com/Joel-VO/Ruka-Chess/releases)
 </div>
 
 # Ruka Chess Engine
