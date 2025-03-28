@@ -66,6 +66,8 @@ cargo build --release
 ruka.exe
 ```
 
+- Next, link the bin file to [CutechessCLI](https://github.com/cutechess/cutechess) or follow the direction provided by [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot?tab=readme-ov-file) to link the engine to lichess.
+
 ## Usage
 
 ### Chess GUI Integration
