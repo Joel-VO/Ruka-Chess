@@ -1,3 +1,6 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Rust](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)](https://www.rust-lang.org/)
+
 # Ruka Chess Engine
 
 ## Overview
@@ -92,7 +95,11 @@ Challenge Ruka on [Lichess.org](https://lichess.org/@/Ruka-Chess)
 
 ## Contributing
 
-Contributions are welcome! Please submit pull requests or open issues on the GitHub repository.
+Contributions are welcome! Please submit pull requests or open issues on the GitHub repository. This is a passion project and i intend to develop it further down the line. However if my code is not upto profession standards, kindly excuse my lack of knowledge :)
+
+I'm learning and continuously doing so, and so helpful and constructive feedback is highly appreciated.
+
+Also, ignore a lot of the commented/redundant code, i'll clean that up in the upcoming patch.
 
 
 ## License
