@@ -42,44 +42,5 @@ pub fn evaluation_func(board: &Board) -> i32{
     eval
 }
 
-// fn additional_eval_capability(board:&Board,eval:i32, game_phase:i32) -> i32{
-//     //king-side safety
-//     let mut resultant_eval:i32 = eval;
-//     let color:Color = board.side_to_move();
-//     let king_square = board.king_square(color);
-//     let king_file = king_square.get_file();
-//     let castled = if king_file == File::C || king_file == File::G{
-//         let rank_val =  if color == Color::White{Rank::First} else {Rank::Eighth};
-//
-//         let rook_king = Square::make_square(rank_val, File::F);
-//         let rook_queen = Square::make_square(rank_val, File::D);
-//
-//         if let Some(rook) = board.piece_on(rook_king){
-//             if rook == Piece::Rook{
-//                 true
-//             }else{
-//                 false
-//             }
-//         }else if let Some(rook) = board.piece_on(rook_queen){
-//             if rook == Piece::Rook{
-//                 true
-//             }else{
-//                 false
-//             }
-//         }else{
-//             false
-//         }
-//     }else{
-//         false
-//     };
-//     if castled && game_phase > 12{
-//         resultant_eval += 50;
-//     }
-//
-//     //add in doubled pawn logic later and other positional concepts
-//
-//
-//     resultant_eval
-// }
 //https://github.com/official-stockfish/nnue-pytorch/blob/master/docs/nnue.md
 //GitHub link explaining NNUE
