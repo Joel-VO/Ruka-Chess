@@ -107,8 +107,6 @@ Contributions are welcome! Please submit pull requests or open issues on the Git
 
 I'm learning and continuously doing so, and so helpful and constructive feedback is highly appreciated.
 
-Also, ignore a lot of the commented/redundant code, i'll clean that up in the upcoming patch.
-
 
 ## License
 
