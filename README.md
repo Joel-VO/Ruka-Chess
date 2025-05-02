@@ -11,18 +11,19 @@
 
 ## Overview
 
-Ruka Chess is a high-performance chess engine developed in Rust, designed to deliver exceptional gameplay through cutting-edge algorithmic techniques. Combining efficiency, speed, and strategic depth, Ruka represents a sophisticated approach to computational chess.
+Ruka Chess is a high-performance chess engine developed in Rust. Combining efficiency, speed, and strategic depth, 
+Ruka represents my personal approach and passion to computational chess.
 
 ## Key Features
 
-- **Advanced Search Algorithms**
+- **Search Algorithms**
   - Minimax algorithm with Principal Variation Search (PVS)
   - Alpha-beta pruning
   - Null move pruning
   - Late Move Reduction (LMR)
 
 - **Efficient Data Structures**
-  - Bitboard representations for compact position handling
+  - Bitboard representations for compact position handling(using chess crate)
   - Transposition Tables using Zobrist hashing
   - Optimized move generation and ordering
 
@@ -32,8 +33,8 @@ Ruka Chess is a high-performance chess engine developed in Rust, designed to del
   - Tactical position analysis
 
 - **Universal Chess Interface (UCI) Compatibility**
-  - Seamless integration with major chess platforms
-  - Support for standard UCI communication protocols
+  - Integration with major chess platforms
+  - Support for common UCI communication protocols
 
 ## Installation
 
@@ -103,17 +104,16 @@ Challenge Ruka on [Lichess.org](https://lichess.org/@/Ruka-Chess)
 
 ## Contributing
 
-Contributions are welcome! Please submit pull requests or open issues on the GitHub repository. This is a passion project and i intend to develop it further down the line. However if my code is not upto profession standards, kindly excuse my lack of knowledge :)
+Contributions are welcome! Please submit pull requests or open issues on the GitHub repository. This is a passion project and i intend to develop it further down the line.
 
 I'm learning and continuously doing so, and so helpful and constructive feedback is highly appreciated.
-
 
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-
 ## Contact
 
 Project Maintainer: Joel VO
 - GitHub: [Joel-VO](https://github.com/Joel-VO)
+- Linkedin: [Joel](https://www.linkedin.com/in/joel-oommen-63bb89271/)

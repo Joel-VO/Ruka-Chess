@@ -5,7 +5,7 @@ use dashmap::DashMap;
 use once_cell::sync::Lazy;
 const NUM_SQUARES:usize = 64;
 const PIECE_NO:usize = 12;//12 pieces
-// const CASTLING_RIGHTS:usize = 16;// 4*4 possible castles position
+// const CASTLING_RIGHTS:usize = 16;
 const EN_PASSANT:usize = 8;// 8 files for castling
 
 #[derive(Copy, Clone)]
@@ -53,6 +53,7 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
             hash ^= zobrist_key.piece_square[piece_val][square];//XOR hash with the randomly generated value
         }
     }
+    //have to add in
     //add logic for castling
     // for (i, right) in board.castle_rights().iter().enumerate() {
     //     if *right {
@@ -67,7 +68,6 @@ pub fn compute_hash_value(board:&Board, zobrist_key:&ZobristHashing) -> u64{
 }
 
 pub fn updated_hash_move(current_hash:u64, move_made:&ChessMove, zobrist_key:&ZobristHashing, board:&Board)->u64{
-    //When passing the board, make sure the move is not made in the board!!! otherwise the kernel will panic
     let mut new_hash = current_hash;
 
     let piece_start_square = move_made.get_source();
@@ -115,3 +115,4 @@ pub fn null_move_hash(current_hash: u64, zobrist_key: &ZobristHashing)->u64{
     let new_hash = current_hash^zobrist_key.side_to_move;
     new_hash
 }
+// using TT in an engine https://chess.stackexchange.com/questions/27225/use-of-transposition-tables-in-chess-engines?rq=1

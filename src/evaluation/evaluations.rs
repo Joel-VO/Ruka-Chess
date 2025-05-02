@@ -37,8 +37,6 @@ pub fn evaluation_func(board: &Board) -> i32{
     let mg_phase = game_phase.min(24);
     let eg_phase = 24-mg_phase;
     let eval:i32 = (mg_score*mg_phase + eg_score*eg_phase)/24;
-    // let complete_eval = additional_eval_capability(board,eval, mg_phase);
-    // complete_eval
     eval
 }
 

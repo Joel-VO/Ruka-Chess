@@ -103,3 +103,4 @@ pub fn q_search(board: &Board, mut alpha: i32, mut beta: i32, depth: u8, max_dep
 
     best_val
 }
+//q search https://chess.stackexchange.com/questions/27257/chess-engine-quiescence-search-increases-required-time-by-a-factor-of-20?rq=1

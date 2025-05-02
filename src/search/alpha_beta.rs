@@ -6,7 +6,8 @@ use rayon::prelude::*;
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
 use crate::search::search_improvements::zobrist_hash::{compute_hash_value, updated_hash_move, Z_HASHING_KEYS, TRANSPOSITION_TABLE, NodeType, TtStructure,null_move_hash};
-const R:u8 = 2; //reduction value for null-move pruning
+const R:u8 = 2; //reduction value for null-move pruning, higher is more reduction and hence 
+// faster but lower accuracy 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8) ->Option<(ChessMove, i32)>{
 
     let alpha = i32::MIN;
@@ -90,7 +91,9 @@ fn alpha_beta_search(board: &Board,
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth even due to odd even rule
+        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth 
+        // even due to odd even rule, made it even for faster search, horizon effect mitigated to
+        // an extent by the quiescence search.
     }else{
         if depth > 7 && !(board.checkers().popcnt()>0){//null move pruning
             let null_move_board = board.null_move().expect("Not a valid position condition");
