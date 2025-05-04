@@ -117,6 +117,8 @@ I'm learning and continuously doing so, and so helpful and constructive feedback
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
+Image credit: DALL.E 3 and image further edited by [Joel-VO](https://github.com/Joel-VO) in GIMP
+
 ## Contact
 
 Project Maintainer: Joel VO
