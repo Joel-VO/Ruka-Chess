@@ -7,7 +7,9 @@
 [![GitHub Release](https://img.shields.io/github/v/release/Joel-VO/Ruka-Chess?display_name=tag&color=green&label=Release)](https://github.com/Joel-VO/Ruka-Chess/releases)
 </div>
 
-![Ruka](https://github.com/user-attachments/assets/613145a1-e65c-4aca-ba22-5978d9e25e28)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/613145a1-e65c-4aca-ba22-5978d9e25e28" alt="Ruka" width="300">
+</p>
 
 
 # Ruka Chess Engine
