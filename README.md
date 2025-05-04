@@ -12,7 +12,7 @@
 </p>
 
 
-# Ruka Chess Engine
+# Ruka Chess
 
 ## Overview
 
