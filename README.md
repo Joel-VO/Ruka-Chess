@@ -52,7 +52,7 @@ Ruka represents my personal approach and passion to computational chess.
 
 ```shell
 git clone https://github.com/Joel-VO/Ruka-Chess.git
-cd ruka
+cd Ruka-Chess
 ```
 
 ### Running the Engine
@@ -64,7 +64,7 @@ cargo run --release
 
 # Alternative method
 cargo build --release
-./target/release/ruka
+./target/release/Ruka
 ```
 - Next, link the bin file to [CutechessCLI](https://github.com/cutechess/cutechess) or follow the direction provided by [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot?tab=readme-ov-file) to link the engine to lichess.
 
@@ -75,7 +75,7 @@ cargo run --release
 
 # Alternative method
 cargo build --release
-ruka.exe
+Ruka.exe
 ```
 
 - Next, link the bin file to [CutechessCLI](https://github.com/cutechess/cutechess) or follow the direction provided by [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot?tab=readme-ov-file) to link the engine to lichess.
