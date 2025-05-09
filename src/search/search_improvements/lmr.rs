@@ -32,9 +32,9 @@ pub fn lmr(board:&Board,moves_sorted:&ArrayVec<ChessMove,218>, depth:u8)->u8{
         let updated_depth:f64;
         let is_tactical:bool = tactical_position(board, moves_sorted);
         if is_tactical{
-            updated_depth = 0.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/3.35;
+            updated_depth = 0.2 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/2.35;
         }else{
-            updated_depth = 1.35 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/2.75;
+            updated_depth = 1.35 + ((moves_sorted.len() as f64).ln() * (depth as f64).ln())/1.75;
         }
         //add in logic for tactical vs quiet
         updated_depth as u8

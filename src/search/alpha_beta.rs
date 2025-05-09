@@ -91,7 +91,7 @@ fn alpha_beta_search(board: &Board,
     }else if board.status() == BoardStatus::Stalemate{
         return 0
     }else if depth >= max_depth{
-        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth 
+        return q_search(board, alpha, beta, depth, max_depth+2, is_maximising)//made max_depth
         // even due to odd even rule, made it even for faster search, horizon effect mitigated to
         // an extent by the quiescence search.
     }else{

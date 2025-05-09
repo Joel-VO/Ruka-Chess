@@ -42,9 +42,9 @@ pub fn q_search(board: &Board, mut alpha: i32, mut beta: i32, depth: u8, max_dep
     // Terminal node checks
     if board.status() == BoardStatus::Checkmate {
         return if board.side_to_move() == Color::White {
-            -400000 + (depth as i32)
+            -500000 + (depth as i32)
         } else {
-            400000 - (depth as i32)
+            500000 - (depth as i32)
         };
     } else if board.status() == BoardStatus::Stalemate {
         return 0;

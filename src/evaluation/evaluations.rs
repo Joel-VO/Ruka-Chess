@@ -2,6 +2,7 @@ use chess::{Board, ALL_SQUARES};// Color, File, Square, Rank, Piece
 use crate::evaluation::piece_square_tables::eg_piece_square_table::EG_PIECE_SQUARE_TABLES;
 use crate::evaluation::piece_square_tables::mg_piece_square_table::MG_PIECE_SQUARE_TABLES;
 
+
 pub fn evaluation_func(board: &Board) -> i32{
     const MG_VALUES:[i32;6] = [82, 337, 365, 477, 1025,  0];
     const EG_VALUES:[i32;6] = [94, 281, 297, 512,  936,  0];

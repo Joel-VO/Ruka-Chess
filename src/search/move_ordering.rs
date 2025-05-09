@@ -10,6 +10,7 @@ fn piece_value(piece:Piece) -> i16{
         Piece::King => 10000
     }
 }
+
 fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and captures
     //score stores the score of a move
     let mut score:i16 = 0;
