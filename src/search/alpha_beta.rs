@@ -6,7 +6,7 @@ use rayon::prelude::*;
 use crate::search::search_improvements::quiescent_search::q_search;
 use crate::search::search_improvements::lmr::lmr;
 use crate::search::search_improvements::zobrist_hash::{compute_hash_value, updated_hash_move, Z_HASHING_KEYS, TRANSPOSITION_TABLE, NodeType, TtStructure,null_move_hash};
-const R:u8 = 2; //reduction value for null-move pruning, higher is more reduction and hence 
+const R:u8 = 3; //reduction value for null-move pruning, higher is more reduction and hence 
 // faster but lower accuracy 
 pub fn best_move(board:&Board, is_maximising:bool, max_depth:u8) ->Option<(ChessMove, i32)>{
 
@@ -95,7 +95,7 @@ fn alpha_beta_search(board: &Board,
         // even due to odd even rule, made it even for faster search, horizon effect mitigated to
         // an extent by the quiescence search.
     }else{
-        if depth > 7 && !(board.checkers().popcnt()>0){//null move pruning
+        if depth > 3 && !(board.checkers().popcnt()>0){//null move pruning
             let null_move_board = board.null_move().expect("Not a valid position condition");
             //add in renewed hash value. create a new hash function that removes previous en_passant rule if possible and switches sides.
             let null_hash = null_move_hash(current_hash ,&Z_HASHING_KEYS);
@@ -222,3 +222,18 @@ fn alpha_beta_search(board: &Board,
         eval
     }
 }
+
+
+// fn negamax(board: &Board,
+//            mut alpha: i32,
+//            mut beta: i32,
+//            is_maximising: bool,
+//            depth: u8,
+//            max_depth: u8,
+//            current_hash: u64) -> i32{
+//     //Transpotion table logic
+//     
+//     //checkmate condition and stalemate logic
+//     
+//     //
+// }

@@ -1,7 +1,7 @@
 [package]
 name = "Ruka-Chess"
-version = "1.0.1"
-edition = "2021"
+version = "1.4.2"
+edition = "2024"
 
 [dependencies]
 chess = "3.2.0"
@@ -10,3 +10,10 @@ dashmap = "6.1.0"
 rand = "0.9.0"
 arrayvec = "0.7.6"
 once_cell = "1.20.3"
+
+[profile.release]
+opt-level = 3              # Maximum speed
+lto = true                 # Enable Link Time Optimization
+codegen-units = 1          # Better inlining and optimization across crates
+panic = "abort"            # Smaller binary, no unwinding
+incremental = false        # Disable incremental compilation

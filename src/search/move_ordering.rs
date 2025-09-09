@@ -26,8 +26,8 @@ fn score_move(board: &Board, mv: &ChessMove) -> i16{//prioritise checks and capt
         }
     }
 
-    if mv.get_promotion().is_some(){// can be fine-tuned
-        score+=1000;
+    if mv.get_promotion().is_some(){
+        score+=500;
     }
     score
 }

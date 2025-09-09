@@ -3,14 +3,14 @@
 // use crate::search::alpha_beta::best_move;
 // use std::{io, time::{Duration, Instant}};
 // use crate::search::search_improvements::zobrist_hash::{TRANSPOSITION_TABLE, Z_HASHING_KEYS};
-//
+
 // pub fn uci() {
 //     // Default board is the starting position
 //     let mut board = Board::default();
 //     let stdin = io::stdin();
 //     let _ = *TRANSPOSITION_TABLE; //init of Transposition table
 //     let _ = *Z_HASHING_KEYS; // init of hashing keys
-//
+// 
 //     // UCI main loop
 //     loop {
 //         let mut input = String::new();
@@ -21,7 +21,7 @@
 //         if input.is_empty() {
 //             continue;
 //         }
-//
+// 
 //         // Quit command
 //         if input == "quit" {
 //             TRANSPOSITION_TABLE.clear();
@@ -98,7 +98,7 @@
 //             let mut movetime: Option<Duration> = None;
 //             let mut wtime: Option<Duration> = None;
 //             let mut btime: Option<Duration> = None;
-//
+// 
 //             let tokens: Vec<&str> = input.split_whitespace().collect();
 //             // Parse time parameters
 //             if let Some(index) = tokens.iter().position(|&s| s == "movetime") {
@@ -122,10 +122,10 @@
 //                     }
 //                 }
 //             }
-//
+// 
 //             // Determine whose turn it is
 //             let is_maximising = matches!(board.side_to_move(), Color::White);
-//
+// 
 //             // Calculate time limit based on current player's remaining time
 //             let time_limit = if let Some(mt) = movetime {
 //                 mt
@@ -144,12 +144,12 @@
 //                     }
 //                 })
 //             };
-//
+// 
 //             // Iterative deepening search
 //             let now = Instant::now();
 //             let mut best_mov = ChessMove::default();
 //             let mut _eval = 0;
-//
+// 
 //             for depth in (1..100).step_by(2) {
 //                 if now.elapsed() > time_limit {
 //                     break;
@@ -161,9 +161,9 @@
 //                     break;
 //                 }
 //             }
-//
+// 
 //             println!("bestmove {}", best_mov);
-//
+// 
 //             // let now = Instant::now();
 //             // let mut best_mov = ChessMove::default();
 //             // let mut _eval = 0;
@@ -364,7 +364,7 @@ pub fn uci() {
                 player_time.map_or(Duration::from_secs(2), |pt| {
                     // Estimate remaining moves based on game phase
                     // Count pieces to roughly determine game phase
-                    let piece_count = board.combined().popcnt() as u32;
+                    let piece_count = board.combined().popcnt();
 
                     // Early game: ~40 moves remaining, middlegame: ~25, endgame: ~15
                     let estimated_moves_left = if piece_count > 24 {
