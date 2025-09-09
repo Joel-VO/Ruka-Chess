@@ -1,0 +1,7 @@
+[build]
+rustflags = [
+    "-C", "target-cpu=native", 
+    "-C", "target-feature=+avx2,+fma,+bmi2,+sse4.2",
+    "-C", "codegen-units=1",
+    "-C", "panic=abort"
+]
